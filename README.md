@@ -11,7 +11,7 @@ Visually requires an "Instrument" which allows controlling the store.
 Adding to Cart, Opening Cart Drawer, etc.
 Visually also needs to "know" when the state of the Store changes, 
 for example, when an item is added to the cart, a pdp is changing, user selecting a specific variant, etc.
-We use this information both to allow audience targeting and collecting analytics.
+We use this information to allow audience targeting and collecting analytics, and show upsells.
 
 ## Key Integration Points
 - Adding the visually.io script to the page
