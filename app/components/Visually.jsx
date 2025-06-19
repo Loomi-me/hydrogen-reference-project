@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {useLocation} from 'react-router';
 import {useCart} from '@shopify/hydrogen-react';
 import {useAside} from '~/components/Aside.jsx';
-import {Script, useAnalytics } from '@shopify/hydrogen';
+import {useAnalytics} from '@shopify/hydrogen';
 
 export function VisuallyConnect() {
   useVisuallyConnect();
@@ -10,52 +10,51 @@ export function VisuallyConnect() {
 }
 
 const useVisuallyConnect = () => {
+  window.visually.analyticsProcessingAllowed = () => true // change this to false if user declined tracking consent
+
   const [isLoaded, setIsLoaded] = useState(false);
   const cartWithActions = useCart();
   const {open} = useAside();
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setIsLoaded(!!window.visually?.visuallyConnect);
   }, []);
-  const {pathname} = useLocation();
 
   const {shop} = useAnalytics();
+
   useEffect(() => {
     if (!isLoaded) return;
-    console.log(`Visually SDK is loaded, connecting...`);
     window.visually.visuallyConnect({
-      cartClear: maybe(() =>
-        cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
-      ),
-      addToCart: maybe((variantId, quantity) =>
-        cartWithActions.linesAdd([
-          {
-            merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
-            quantity,
-          },
-        ]),
-      ),
-      cartAddAttributes: maybe((attributes) =>
-        cartWithActions.cartAttributesUpdate(attributes),
-      ),
+      cartClear: () => cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
+      addToCart: (variantId, quantity) => cartWithActions.linesAdd([
+        {
+          merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
+          quantity,
+        },
+      ]),
+      cartAddAttributes: (attributes) => cartWithActions.cartAttributesUpdate(attributes),
       openCartDrawer: () => open('cart'),
       initialCurrency: shop.currency,
       customerTags: [], // strings array
       country: '', // initialize in case you have a country selection - ISO CODE
-      initialLocale: shop.acceptedLanguage.toLocaleLowerCase,
+      initialLocale: shop.acceptedLanguage.toLocaleLowerCase(),
     });
-    console.log(`Visually SDK connected `);
   }, [isLoaded]);
+
   const transformedCart = transformCart(cartWithActions);
   useEffect(() => {
     if (!isLoaded) return;
     maybe(() => window.visually.onCartChanged(transformedCart));
   }, [isLoaded, hash(transformedCart)]);
+
+  const {pathname} = useLocation();
   const pageType = getPageType(pathname);
   useEffect(() => {
     if (!isLoaded) return;
     maybe(() => window.visually.pageTypeChanged(pageType));
-  }, [isLoaded,pageType]);
+  }, [isLoaded, pageType]);
+
   useEffect(() => {
     maybe(() => window.visually.localeChanged(shop?.currency));
   }, [shop?.currency]);
@@ -117,30 +116,30 @@ export function maybe(f, def = undefined) {
 function transformCart(cart) {
   return cart
     ? {
-        item_count: maybe(() => cart.lines.reduce((p, c) => p + c.quantity, 0)),
-        attributes: cart?.attributes || [],
-        items: cart.lines.map((l) => ({
-          handle: l.merchandise.product.handle,
-          price: maybe(() => parseFloat(l.cost.totalAmount.amount) * 100),
-          product_id: maybe(() =>
-            parseFloat(
-              l.merchandise.product.id.replace('gid://shopify/Product/', ''),
-            ),
+      item_count: maybe(() => cart.lines.reduce((p, c) => p + c.quantity, 0)),
+      attributes: cart?.attributes || [],
+      items: cart.lines.map((l) => ({
+        handle: l.merchandise.product.handle,
+        price: maybe(() => parseFloat(l.cost.totalAmount.amount) * 100),
+        product_id: maybe(() =>
+          parseFloat(
+            l.merchandise.product.id.replace('gid://shopify/Product/', ''),
           ),
-          quantity: l.quantity,
-          variant_id: maybe(() =>
-            parseFloat(
-              l.merchandise.id.replace('gid://shopify/ProductVariant/', ''),
-            ),
-          ),
-        })),
-        currency: maybe(() => cart.cost.totalAmount.currencyCode, 0),
-        total_price: maybe(
-          () => parseFloat(cart.cost.totalAmount.amount) * 100,
-          0,
         ),
-        token: maybe(() => cart.id.replace('gid://shopify/Cart/', ''), ''),
-      }
+        quantity: l.quantity,
+        variant_id: maybe(() =>
+          parseFloat(
+            l.merchandise.id.replace('gid://shopify/ProductVariant/', ''),
+          ),
+        ),
+      })),
+      currency: maybe(() => cart.cost.totalAmount.currencyCode, 0),
+      total_price: maybe(
+        () => parseFloat(cart.cost.totalAmount.amount) * 100,
+        0,
+      ),
+      token: maybe(() => cart.id.replace('gid://shopify/Cart/', ''), ''),
+    }
     : undefined;
 }
 
@@ -179,6 +178,7 @@ export function transformProduct(product) {
     };
   });
 }
+
 export function hash(obj) {
   if (!obj) return '';
   return JSON.stringify(obj, Object.keys(obj).sort());
