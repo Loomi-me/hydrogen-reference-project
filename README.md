@@ -1,8 +1,7 @@
 # Visually Hydrogen Reference Project 
 ---
-
 <div style="background: white; border-radius: 30px; padding: 15px 60px; display: inline-block;">
-  <img alt="img.png" src="https://visually.io/static/43561f1425374a352b175d0239af224c/a0b8f/logo-wide.webp" width="700"/>
+  <img alt="img.png" src="readme_assets/logo-wide.webp" width="700"/>
 </div>
 ## Visually Headless Integration
 
