@@ -10,7 +10,6 @@ export function VisuallyConnect() {
 }
 
 const useVisuallyConnect = () => {
-  window.visually.analyticsProcessingAllowed = () => true // change this to false if user declined tracking consent
 
   const [isLoaded, setIsLoaded] = useState(false);
   const cartWithActions = useCart();
@@ -18,6 +17,7 @@ const useVisuallyConnect = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    window.visually.analyticsProcessingAllowed = () => true // change this to false if user declined tracking consent
     setIsLoaded(!!window.visually?.visuallyConnect);
   }, []);
 
