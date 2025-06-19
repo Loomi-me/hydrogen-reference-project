@@ -1,8 +1,9 @@
 # Visually Hydrogen Reference Project 
 ---
 
-<img alt="img.png"  src="https://visually.io/static/43561f1425374a352b175d0239af224c/a0b8f/logo-wide.webp" width="700" style="background: white;border-radius: 30px;padding: 15px 60px"/>
-
+<div style="background: white; border-radius: 30px; padding: 15px 60px; display: inline-block;">
+  <img alt="img.png" src="https://visually.io/static/43561f1425374a352b175d0239af224c/a0b8f/logo-wide.webp" width="700"/>
+</div>
 ## Visually Headless Integration
 
 This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts. It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
