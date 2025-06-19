@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import {useLocation} from 'react-router';
 import {useCart} from '@shopify/hydrogen-react';
 import {useAside} from '~/components/Aside.jsx';
+import {useAnalytics} from '@shopify/hydrogen';
 
 export function VisuallyConnect() {
   useVisuallyConnect();
@@ -18,53 +19,44 @@ const useVisuallyConnect = () => {
   }, []);
   const {pathname} = useLocation();
 
+  const {shop} = useAnalytics();
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (!isLoaded) {
-      return;
-    }
+    if (!isLoaded) return;
     window.visually.visuallyConnect({
-      cartClear: () =>
+      cartClear: maybe(() =>
         cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
-      customerTags: [], // add customer tags if available
-      addToCart: (variantId, quantity) =>
+      ),
+      addToCart: maybe((variantId, quantity) =>
         cartWithActions.linesAdd([
           {
             merchandiseId: `gid://shopify/ProductVariant/${variantId}`,
             quantity,
           },
         ]),
-      cartAddAttributes: (attributes) =>
+      ),
+      cartAddAttributes: maybe((attributes) =>
         cartWithActions.cartAttributesUpdate(attributes),
+      ),
       openCartDrawer: () => open('cart'),
-      pageType: getPageType(pathname),
-      initialProductId: 123,
-      initialVariantPrice: 1500, // in cents
-      initialVariantId: 111,
-      initialCurrency: cartWithActions?.cost?.totalAmount?.currencyCode,
+      initialCurrency: shop.currency,
+      customerTags: [], // strings array
+      country: '', // initialize in case you have a country selection - ISO CODE
+      initialLocale: shop.acceptedLanguage.toLocaleLowerCase,
     });
-  }, [isLoaded, pathname]);
-
-  // useEffect(() => {
-  //   if (status !== 'idle') return;
-  //   if (DEBUG) console.log('visually onCartChanged:', cart);
-  //   maybe(() => window.visually.onCartChanged(transformCart(cart)));
-  // }, [status]);
-  //
-  // useEffect(() => {
-  //   if (DEBUG) console.log('visually pageTypeChanged:', pageType);
-  //   maybe(() => window.visually.pageTypeChanged(pageType));
-  // }, [pageType]);
-  //
-  // useEffect(() => {
-  //   if (DEBUG) console.log('visually: localeChanged:', locale?.currency);
-  //   maybe(() => window.visually.localeChanged(locale?.currency));
-  // }, [locale?.currency]);
-  //
-  // useEffect(() => {
-  //   if (DEBUG) console.log('visually: productChanged:', currentProduct);
-  //   maybe(() => window.visually.productChanged(currentProduct));
-  // }, [currentProduct?.id]);
+  }, [isLoaded]);
+  const transformedCart = transformCart(cartWithActions);
+  useEffect(() => {
+    if (!isLoaded) return;
+    maybe(() => window.visually.onCartChanged(transformedCart));
+  }, [isLoaded, hash(transformedCart)]);
+  const pageType = getPageType(pathname);
+  useEffect(() => {
+    if (!isLoaded) return;
+    maybe(() => window.visually.pageTypeChanged(pageType));
+  }, [isLoaded,pageType]);
+  useEffect(() => {
+    maybe(() => window.visually.localeChanged(shop?.currency));
+  }, [shop?.currency]);
 };
 
 export function VisuallySDK() {
@@ -126,11 +118,10 @@ export function VisuallySDK() {
   );
 }
 
-
-function maybe(f, def = undefined) {
+export function maybe(f, def = undefined) {
   try {
     return f();
-  } catch (error) {
+  } catch {
     return def;
   }
 }
@@ -178,4 +169,29 @@ function getPageType(pathname) {
     return 'collection';
   }
   return pageType;
+}
+
+export const transformVariant = (selected) => {
+  return {
+    id: selected?.id?.replace('gid://shopify/ProductVariant/', ''),
+    price: selected?.price?.amount * 100, // price in cents
+    iq: selected.quantityAvailable,
+  };
+};
+
+export function transformProduct(product) {
+  return maybe(() => {
+    const selected = product.selectedOrFirstAvailableVariant;
+    const variants = [selected, ...(product?.adjacentVariants || [])];
+    return {
+      variants: [...variants.map(transformVariant)],
+      id: product.id.replace('gid://shopify/Product/', ''),
+      oos: false,
+      price: selected?.price?.amount * 100, // cents
+    };
+  });
+}
+export function hash(obj) {
+  if (!obj) return '';
+  return JSON.stringify(obj, Object.keys(obj).sort());
 }

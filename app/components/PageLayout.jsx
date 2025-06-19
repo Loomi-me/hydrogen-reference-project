@@ -1,4 +1,4 @@
-import {Link} from 'react-router';
+import {Link } from 'react-router';
 import {useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';

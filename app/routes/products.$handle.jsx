@@ -1,16 +1,18 @@
 import {useLoaderData} from 'react-router';
 import {
-  getSelectedProductOptions,
   Analytics,
-  useOptimisticVariant,
-  getProductOptions,
   getAdjacentAndFirstAvailableVariants,
+  getProductOptions,
+  getSelectedProductOptions,
+  useOptimisticVariant,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
+import {hash, maybe, transformProduct, transformVariant} from '~/components/Visually.jsx';
+import {useEffect} from 'react';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -29,13 +31,10 @@ export const meta = ({data}) => {
  * @param {LoaderFunctionArgs} args
  */
 export async function loader(args) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
-
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return {...criticalData};
 }
 
 /**
@@ -70,34 +69,25 @@ async function loadCriticalData({context, params, request}) {
   };
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- * @param {LoaderFunctionArgs}
- */
-function loadDeferredData({context, params}) {
-  // Put any API calls that is not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
-
-  return {};
-}
-
 export default function Product() {
   /** @type {LoaderReturnData} */
   const {product} = useLoaderData();
-
-  // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
   );
 
-  // Sets the search param to the selected variant without navigation
-  // only when no search params are set in the url
-  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
+  const transformedProduct = transformProduct(product);
+  useEffect(() => {
+    maybe(() => window.visually.productChanged(transformedProduct));
+  }, [hash(transformedProduct)]);
 
-  // Get the product options array
+  const transformedVariant = transformVariant(selectedVariant);
+  useEffect(() => {
+    maybe(() => window.visually.variantChanged(transformedVariant));
+  }, [hash(transformedVariant)]);
+
+  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
   const productOptions = getProductOptions({
     ...product,
     selectedOrFirstAvailableVariant: selectedVariant,
@@ -148,95 +138,96 @@ export default function Product() {
 }
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
-    compareAtPrice {
-      amount
-      currencyCode
-    }
-    id
-    image {
-      __typename
-      id
-      url
-      altText
-      width
-      height
-    }
-    price {
-      amount
-      currencyCode
-    }
-    product {
-      title
-      handle
-    }
-    selectedOptions {
-      name
-      value
-    }
-    sku
-    title
-    unitPrice {
-      amount
-      currencyCode
-    }
+fragment ProductVariant on ProductVariant {
+  availableForSale
+  quantityAvailable
+  compareAtPrice {
+    amount
+    currencyCode
   }
+  id
+  image {
+    __typename
+    id
+    url
+    altText
+    width
+    height
+  }
+  price {
+    amount
+    currencyCode
+  }
+  product {
+    title
+    handle
+  }
+  selectedOptions {
+    name
+    value
+  }
+  sku
+  title
+  unitPrice {
+    amount
+    currencyCode
+  }
+}
 `;
 
 const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
-    id
-    title
-    vendor
-    handle
-    descriptionHtml
-    description
-    encodedVariantExistence
-    encodedVariantAvailability
-    options {
+fragment Product on Product {
+  id
+  title
+  vendor
+  handle
+  descriptionHtml
+  description
+  encodedVariantExistence
+  encodedVariantAvailability
+  options {
+    name
+    optionValues {
       name
-      optionValues {
-        name
-        firstSelectableVariant {
-          ...ProductVariant
-        }
-        swatch {
-          color
-          image {
-            previewImage {
-              url
-            }
+      firstSelectableVariant {
+        ...ProductVariant
+      }
+      swatch {
+        color
+        image {
+          previewImage {
+            url
           }
         }
       }
     }
-    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-      ...ProductVariant
-    }
-    adjacentVariants (selectedOptions: $selectedOptions) {
-      ...ProductVariant
-    }
-    seo {
-      description
-      title
-    }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
+  selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
+    ...ProductVariant
+  }
+  adjacentVariants (selectedOptions: $selectedOptions) {
+    ...ProductVariant
+  }
+  seo {
+    description
+    title
+  }
+}
+${PRODUCT_VARIANT_FRAGMENT}
 `;
 
 const PRODUCT_QUERY = `#graphql
-  query Product(
-    $country: CountryCode
-    $handle: String!
-    $language: LanguageCode
-    $selectedOptions: [SelectedOptionInput!]!
-  ) @inContext(country: $country, language: $language) {
-    product(handle: $handle) {
-      ...Product
-    }
+query Product(
+  $country: CountryCode
+  $handle: String!
+  $language: LanguageCode
+  $selectedOptions: [SelectedOptionInput!]!
+) @inContext(country: $country, language: $language) {
+  product(handle: $handle) {
+    ...Product
   }
-  ${PRODUCT_FRAGMENT}
+}
+${PRODUCT_FRAGMENT}
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
