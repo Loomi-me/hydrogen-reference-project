@@ -26,9 +26,14 @@ export default async function handleRequest(
       "'self'",
       'https://cdn.shopify.com',
       'https://live.visually-io.com',
+      "'unsafe-eval'",
+    ],
+    connectSrc: [
+      "'self'",
+      'https://cdn.shopify.com',
+      'https://live.visually-io.com',
     ],
   });
-
   const body = await renderToReadableStream(
     <NonceProvider>
       <ServerRouter

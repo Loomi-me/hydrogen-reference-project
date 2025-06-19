@@ -18,24 +18,6 @@ import {VisuallySDK} from './components/Visually.jsx';
 import {CartProvider, ShopifyProvider} from '@shopify/hydrogen-react';
 
 /**
- * This is important to avoid re-fetching root queries on sub-navigations
- * @type {ShouldRevalidateFunction}
- */
-export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
-  // revalidate when a mutation is performed e.g add to cart, login...
-  if (formMethod && formMethod !== 'GET') return true;
-
-  // revalidate when manually revalidating via useRevalidator
-  if (currentUrl.toString() === nextUrl.toString()) return true;
-
-  // Defaulting to no revalidation for root loader data to improve performance.
-  // When using this feature, you risk your UI getting out of sync with your server.
-  // Use with caution. If you are uncomfortable with this optimization, update the
-  // line below to `return defaultShouldRevalidate` instead.
-  // For more details see: https://remix.run/docs/en/main/route/should-revalidate
-  return false;
-};
-
 /**
  * The main and reset stylesheets are added in the Layout component
  * to prevent a bug in development HMR updates.
@@ -165,6 +147,7 @@ export function Layout({children}) {
           <ShopifyProvider
             storeDomain={'https://puretaki.myshopify.com/'}
             storefrontToken={data.consent.storefrontAccessToken}
+            storefrontId={data.shop.publicStorefrontId}
             storefrontApiVersion={'2025-04'}
             countryIsoCode={data.consent.country}
             languageIsoCode={data.consent.language}

@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {useLocation} from 'react-router';
 import {useCart} from '@shopify/hydrogen-react';
 import {useAside} from '~/components/Aside.jsx';
-import {useAnalytics} from '@shopify/hydrogen';
+import {Script, useAnalytics } from '@shopify/hydrogen';
 
 export function VisuallyConnect() {
   useVisuallyConnect();
@@ -22,6 +22,7 @@ const useVisuallyConnect = () => {
   const {shop} = useAnalytics();
   useEffect(() => {
     if (!isLoaded) return;
+    console.log(`Visually SDK is loaded, connecting...`);
     window.visually.visuallyConnect({
       cartClear: maybe(() =>
         cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
@@ -43,6 +44,7 @@ const useVisuallyConnect = () => {
       country: '', // initialize in case you have a country selection - ISO CODE
       initialLocale: shop.acceptedLanguage.toLocaleLowerCase,
     });
+    console.log(`Visually SDK connected `);
   }, [isLoaded]);
   const transformedCart = transformCart(cartWithActions);
   useEffect(() => {
@@ -82,20 +84,6 @@ export function VisuallySDK() {
         rel="preload"
         as="script"
         href="https://live.visually-io.com/v/visually-spa.js"
-      />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            const env = 2;
-            window.loomi_ctx = {
-              ...(window.loomi_ctx || {}),
-              storeAlias: "PURETAKI",
-              jitsuKey: "js.65515421926",
-              env
-            };
-            // window.vslyNotShopify = true;
-          `,
-        }}
       />
       <script
         type="text/javascript"
