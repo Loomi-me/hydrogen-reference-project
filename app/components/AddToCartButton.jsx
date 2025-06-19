@@ -1,4 +1,5 @@
 import {CartForm} from '@shopify/hydrogen';
+import {useCart} from '@shopify/hydrogen-react';
 
 /**
  * @param {{
@@ -9,32 +10,26 @@ import {CartForm} from '@shopify/hydrogen';
  *   onClick?: () => void;
  * }}
  */
-export function AddToCartButton({
-  analytics,
-  children,
-  disabled,
-  lines,
-  onClick,
-}) {
+export function AddToCartButton({children, disabled, lines, onClick}) {
+  const cart = useCart();
   return (
-    <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
-      {(fetcher) => (
-        <>
-          <input
-            name="analytics"
-            type="hidden"
-            value={JSON.stringify(analytics)}
-          />
-          <button
-            type="submit"
-            onClick={onClick}
-            disabled={disabled ?? fetcher.state !== 'idle'}
-          >
-            {children}
-          </button>
-        </>
-      )}
-    </CartForm>
+    <button
+      disabled={disabled}
+      type="submit"
+      onClick={() => {
+        cart.linesAdd(lines);
+        onClick();
+      }}
+      style={{
+        border: '1px solid black',
+        backgroundColor: 'white',
+        padding: '8px 16px',
+        borderRadius: '4px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+      }}
+    >
+      {children}
+    </button>
   );
 }
 

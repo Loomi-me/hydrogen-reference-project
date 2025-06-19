@@ -1,5 +1,5 @@
-import {Await, Link} from 'react-router';
-import {Suspense, useId} from 'react';
+import {Link} from 'react-router';
+import {useId} from 'react';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
 import {Header, HeaderMenu} from '~/components/Header';
@@ -9,12 +9,12 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {VisuallyConnect} from '~/components/Visually.jsx';
 
 /**
  * @param {PageLayoutProps}
  */
 export function PageLayout({
-  cart,
   children = null,
   footer,
   header,
@@ -23,13 +23,13 @@ export function PageLayout({
 }) {
   return (
     <Aside.Provider>
-      <CartAside cart={cart} />
+      <VisuallyConnect />
+      <CartAside />
       <SearchAside />
       <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
       {header && (
         <Header
           header={header}
-          cart={cart}
           isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
         />
@@ -47,16 +47,10 @@ export function PageLayout({
 /**
  * @param {{cart: PageLayoutProps['cart']}}
  */
-function CartAside({cart}) {
+function CartAside() {
   return (
     <Aside type="cart" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
-        <Await resolve={cart}>
-          {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
-          }}
-        </Await>
-      </Suspense>
+      <CartMain layout="aside" />
     </Aside>
   );
 }

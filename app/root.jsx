@@ -14,6 +14,8 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from './components/PageLayout';
+import {VisuallySDK} from './components/Visually.jsx';
+import {CartProvider, ShopifyProvider} from '@shopify/hydrogen-react';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -154,18 +156,29 @@ export function Layout({children}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <VisuallySDK />
         <Meta />
         <Links />
       </head>
       <body>
         {data ? (
-          <Analytics.Provider
-            cart={data.cart}
-            shop={data.shop}
-            consent={data.consent}
+          <ShopifyProvider
+            storeDomain={'https://puretaki.myshopify.com/'}
+            storefrontToken={data.consent.storefrontAccessToken}
+            storefrontApiVersion={'2025-04'}
+            countryIsoCode={data.consent.country}
+            languageIsoCode={data.consent.language}
           >
-            <PageLayout {...data}>{children}</PageLayout>
-          </Analytics.Provider>
+            <CartProvider>
+              <Analytics.Provider
+                cart={data.cart}
+                shop={data.shop}
+                consent={data.consent}
+              >
+                <PageLayout {...data}>{children}</PageLayout>
+              </Analytics.Provider>
+            </CartProvider>
+          </ShopifyProvider>
         ) : (
           children
         )}

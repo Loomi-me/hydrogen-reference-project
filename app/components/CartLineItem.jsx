@@ -3,6 +3,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
+import {useCart} from '@shopify/hydrogen-react';
 
 /**
  * A single line item in the cart. It displays the product image, title, price.
@@ -45,7 +46,7 @@ export function CartLineItem({layout, line}) {
             <strong>{product.title}</strong>
           </p>
         </Link>
-        <ProductPrice price={line?.cost?.totalAmount} />
+        <ProductPrice price={line.cost.totalAmount} />
         <ul>
           {selectedOptions.map((option) => (
             <li key={option.name}>
@@ -68,37 +69,50 @@ export function CartLineItem({layout, line}) {
  * @param {{line: CartLine}}
  */
 function CartLineQuantity({line}) {
+  const cartWithActions = useCart();
   if (!line || typeof line?.quantity === 'undefined') return null;
-  const {id: lineId, quantity, isOptimistic} = line;
+  const {id: lineId, quantity} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
     <div className="cart-line-quantity">
       <small>Quantity: {quantity} &nbsp;&nbsp;</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
-        <button
-          aria-label="Decrease quantity"
-          disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
-        >
-          <span>&#8722; </span>
-        </button>
-      </CartLineUpdateButton>
+      <button
+        aria-label="Decrease quantity"
+        disabled={quantity <= 1}
+        name="decrease-quantity"
+        value={prevQuantity}
+        onClick={() => {
+          cartWithActions.linesUpdate([{id: lineId, quantity: prevQuantity}]);
+        }}
+        style={{
+          border: '1px solid black',
+          backgroundColor: 'white',
+          padding: '4px 8px',
+          borderRadius: '4px',
+        }}
+      >
+        <span>&#8722; </span>
+      </button>
+      <button
+        aria-label="Increase quantity"
+        name="increase-quantity"
+        onClick={() => {
+          cartWithActions.linesUpdate([{id: lineId, quantity: nextQuantity}]);
+        }}
+        value={nextQuantity}
+        style={{
+          border: '1px solid black',
+          backgroundColor: 'white',
+          padding: '4px 8px',
+          borderRadius: '4px',
+        }}
+      >
+        <span>&#43;</span>
+      </button>
       &nbsp;
-      <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
-        <button
-          aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
-          disabled={!!isOptimistic}
-        >
-          <span>&#43;</span>
-        </button>
-      </CartLineUpdateButton>
-      &nbsp;
-      <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
+      <CartLineRemoveButton lineIds={[lineId]}  />
     </div>
   );
 }
@@ -113,17 +127,24 @@ function CartLineQuantity({line}) {
  * }}
  */
 function CartLineRemoveButton({lineIds, disabled}) {
+  const cartWithActions = useCart();
   return (
-    <CartForm
-      fetcherKey={getUpdateKey(lineIds)}
-      route="/cart"
-      action={CartForm.ACTIONS.LinesRemove}
-      inputs={{lineIds}}
+    <button
+      disabled={disabled}
+      type="button"
+      onClick={() => {
+        cartWithActions.linesRemove(lineIds);
+      }}
+      style={{
+        border: '1px solid black',
+        backgroundColor: 'white',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+      }}
     >
-      <button disabled={disabled} type="submit">
-        Remove
-      </button>
-    </CartForm>
+      Remove
+    </button>
   );
 }
 

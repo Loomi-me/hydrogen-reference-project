@@ -1,6 +1,7 @@
 import {Link, useNavigate} from 'react-router';
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
+import {useCart} from '@shopify/hydrogen-react';
 
 /**
  * @param {{
@@ -106,7 +107,6 @@ export function ProductForm({productOptions, selectedVariant}) {
                 {
                   merchandiseId: selectedVariant.id,
                   quantity: 1,
-                  selectedVariant,
                 },
               ]
             : []

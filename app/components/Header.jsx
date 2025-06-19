@@ -1,12 +1,13 @@
 import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {Await, NavLink } from 'react-router';
 import {useAnalytics, useOptimisticCart} from '@shopify/hydrogen';
 import {useAside} from '~/components/Aside';
+import {useCart} from '@shopify/hydrogen-react';
 
 /**
  * @param {HeaderProps}
  */
-export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
+export function Header({header, isLoggedIn, publicStoreDomain}) {
   const {shop, menu} = header;
   return (
     <header className="header">
@@ -19,7 +20,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}) {
         primaryDomainUrl={header.shop.primaryDomain.url}
         publicStoreDomain={publicStoreDomain}
       />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      <HeaderCtas isLoggedIn={isLoggedIn} />
     </header>
   );
 }
@@ -85,7 +86,7 @@ export function HeaderMenu({
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({isLoggedIn, cart}) {
+function HeaderCtas({isLoggedIn}) {
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
@@ -97,7 +98,7 @@ function HeaderCtas({isLoggedIn, cart}) {
         </Suspense>
       </NavLink>
       <SearchToggle />
-      <CartToggle cart={cart} />
+      <CartToggle  />
     </nav>
   );
 }
@@ -149,22 +150,16 @@ function CartBadge({count}) {
   );
 }
 
-/**
- * @param {Pick<HeaderProps, 'cart'>}
- */
-function CartToggle({cart}) {
+function CartToggle() {
   return (
     <Suspense fallback={<CartBadge count={null} />}>
-      <Await resolve={cart}>
         <CartBanner />
-      </Await>
     </Suspense>
   );
 }
 
 function CartBanner() {
-  const originalCart = useAsyncValue();
-  const cart = useOptimisticCart(originalCart);
+  const cart = useCart();
   return <CartBadge count={cart?.totalQuantity ?? 0} />;
 }
 
