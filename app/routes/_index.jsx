@@ -2,12 +2,13 @@ import {Await, useLoaderData, Link} from 'react-router';
 import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
+import logo from '~/assets/logo-wide.webp';
 
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'Visually.io Reference Headless Store'}];
 };
 
 /**
@@ -66,22 +67,50 @@ export default function Homepage() {
     <div className="home">
       <FeaturedCollection collection={data.featuredCollection} />
       <div>
-        <h1 style={{
-          fontSize: '3.5rem',
-          textAlign: 'center',
-          padding: '3rem 1rem',
-          margin: '0',
-          backgroundColor: '#f8f9fa',
-          borderBottom: '2px solid #dee2e6',
-          color: '#212529',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          fontWeight: '700',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-        }}>
+        <h1
+          style={{
+            fontSize: '3.5rem',
+            textAlign: 'center',
+            padding: '3rem 1rem',
+            margin: '0',
+            backgroundColor: '#f8f9fa',
+            borderBottom: '2px solid #dee2e6',
+            color: '#212529',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            fontWeight: '700',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+          }}
+        >
           Visually.io Reference Headless Store
         </h1>
+        <div
+          style={{
+            width: '100%',
+            background: '#fff',
+            padding: '2rem 0',
+            borderRadius: '1.5rem',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '2rem 0',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+          }}
+        >
+          <img
+            src={logo}
+            alt="Visually.io Logo"
+            style={{
+              width: '100%',
+              maxWidth: '600px',
+              height: 'auto',
+              display: 'block',
+              borderRadius: '1rem',
+              background: '#fff',
+            }}
+          />
+        </div>
       </div>
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -126,7 +155,9 @@ function RecommendedProducts({products}) {
             <div className="recommended-products-grid">
               {response
                 ? response.products.nodes.map((product) => (
-                    <ProductItem key={product.id} product={product} />
+                    <div key={product.id} style={{width: '200px',borderRadius:"15px"}}>
+                      <ProductItem  product={product} />
+                    </div>
                   ))
                 : null}
             </div>
@@ -139,55 +170,55 @@ function RecommendedProducts({products}) {
 }
 
 const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
+fragment FeaturedCollection on Collection {
+  id
+  title
+  image {
     id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
+    url
+    altText
+    width
+    height
   }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
+  handle
+}
+query FeaturedCollection($country: CountryCode, $language: LanguageCode)
+@inContext(country: $country, language: $language) {
+  collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
+    nodes {
+      ...FeaturedCollection
     }
   }
+}
 `;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
+fragment RecommendedProduct on Product {
+  id
+  title
+  handle
+  priceRange {
+    minVariantPrice {
+      amount
+      currencyCode
+    }
+  }
+  featuredImage {
     id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
+    url
+    altText
+    width
+    height
+  }
+}
+query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+@inContext(country: $country, language: $language) {
+  products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    nodes {
+      ...RecommendedProduct
     }
   }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...RecommendedProduct
-      }
-    }
-  }
+}
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */

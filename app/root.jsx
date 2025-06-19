@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
   useRouteLoaderData,
 } from 'react-router';
-import favicon from '~/assets/favicon.svg';
+import favicon from '~/assets/favicon.ico';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
@@ -18,7 +18,7 @@ import {VisuallySDK} from './components/Visually.jsx';
 import {CartProvider, ShopifyProvider} from '@shopify/hydrogen-react';
 
 /**
-/**
+ /**
  * The main and reset stylesheets are added in the Layout component
  * to prevent a bug in development HMR updates.
  *
@@ -133,41 +133,41 @@ export function Layout({children}) {
 
   return (
     <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href={resetStyles}></link>
-        <link rel="stylesheet" href={appStyles}></link>
-        <VisuallySDK />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {data ? (
-          <ShopifyProvider
-            storeDomain={'https://puretaki.myshopify.com/'}
-            storefrontToken={data.consent.storefrontAccessToken}
-            storefrontId={data.shop.publicStorefrontId}
-            storefrontApiVersion={'2025-04'}
-            countryIsoCode={data.consent.country}
-            languageIsoCode={data.consent.language}
+    <head>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <link rel="stylesheet" href={resetStyles}></link>
+      <link rel="stylesheet" href={appStyles}></link>
+      <VisuallySDK />
+      <Meta />
+      <Links />
+    </head>
+    <body>
+    {data ? (
+      <ShopifyProvider
+        storeDomain={'https://puretaki.myshopify.com/'}
+        storefrontToken={data.consent.storefrontAccessToken}
+        storefrontId={data.shop.publicStorefrontId}
+        storefrontApiVersion={'2025-04'}
+        countryIsoCode={data.consent.country}
+        languageIsoCode={data.consent.language}
+      >
+        <CartProvider>
+          <Analytics.Provider
+            cart={data.cart}
+            shop={data.shop}
+            consent={data.consent}
           >
-            <CartProvider>
-              <Analytics.Provider
-                cart={data.cart}
-                shop={data.shop}
-                consent={data.consent}
-              >
-                <PageLayout {...data}>{children}</PageLayout>
-              </Analytics.Provider>
-            </CartProvider>
-          </ShopifyProvider>
-        ) : (
-          children
-        )}
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
-      </body>
+            <PageLayout {...data}>{children}</PageLayout>
+          </Analytics.Provider>
+        </CartProvider>
+      </ShopifyProvider>
+    ) : (
+      children
+    )}
+    <ScrollRestoration nonce={nonce} />
+    <Scripts nonce={nonce} />
+    </body>
     </html>
   );
 }
