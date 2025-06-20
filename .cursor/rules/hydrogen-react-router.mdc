@@ -1,52 +1,43 @@
 ---
-description: 
-globs: 
+description: "Provides context about the Visually.io integration for this Shopify Hydrogen reference project."
+globs:
+  - "**/*"
 alwaysApply: true
 ---
 
-# React Router Import Rule for Hydrogen
+# Visually.io Integration Rule for Shopify Hydrogen
 
 ## Overview
 
-This Hydrogen project is based on React Router, not Remix. When working with documentation or code examples, you should always use imports from the appropriate React Router packages instead of Remix packages.
+This project is a reference implementation for integrating Visually.io with a Shopify Hydrogen storefront. The primary goal is to demonstrate the correct way to set up and use the Visually SDK. The core logic for this integration is located in `app/components/Visually.jsx`.
 
-## Import Replacements
+## Key Integration Concepts
 
-When you see imports from Remix packages, replace them with their equivalent React Router v7 packages. Here are the common replacements:
+When generating or modifying code, adhere to the following principles derived from the project's `README.md` and existing implementation.
 
-| Remix v2 Package | React Router v7 Package |
-|------------------|-------------------------|
-| `@remix-run/react` | `react-router` |
-| `@remix-run/dev` | `@react-router/dev` |
-| `@remix-run/architect` | `@react-router/architect` |
-| `@remix-run/cloudflare` | `@react-router/cloudflare` |
-| `@remix-run/express` | `@react-router/express` |
-| `@remix-run/fs-routes` | `@react-router/fs-routes` |
-| `@remix-run/node` | `@react-router/node` |
-| `@remix-run/route-config` | `@react-router/dev` |
-| `@remix-run/routes-option-adapter` | `@react-router/remix-routes-option-adapter` |
-| `@remix-run/serve` | `@react-router/serve` |
-| `@remix-run/server-runtime` | `react-router` |
-| `@remix-run/testing` | `react-router` |
+### 1. Core Component: `Visually.jsx`
 
-NEVER USE 'react-router-dom' imports!
+-   **`VisuallySDK` Component**: This component should be added to the main layout (e.g., `app/root.jsx`) within the `<head>` tag to load the necessary Visually scripts. The scripts should be placed at the top of the head to prevent flickering.
+-   **`VisuallyConnect` Component**: This component initializes the connection to Visually by using the `useVisuallyConnect` hook. It must be placed as a descendant of the `CartProvider` and any other providers required to control the store's UI and state (like `AsideProvider` for the cart drawer).
 
-## Common Import Examples
+### 2. Instrument Interface & State Reflection
 
-```js
-// INCORRECT (Remix style)
-import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } from '@remix-run/react';
+The integration works by:
+-   **Providing an "Instrument" interface**: This gives Visually programmatic control over the store (e.g., adding to cart, opening the cart drawer). The implementation is in the `useVisuallyConnect` hook, which maps functions like `addToCart` and `openCartDrawer` to the store's capabilities (using `useCart` and `useAside` from Hydrogen).
+-   **Reflecting Store State**: The application must notify Visually of important events. This is achieved by calling `window.visually` functions when state changes.
 
-// CORRECT (React Router style)
-import { useLoaderData, Link, Form, useActionData, useNavigation, useSubmit } from 'react-router';
-```
+### 3. Event Tracking Examples
+
+Follow the patterns in `app/components/Visually.jsx` and other parts of the app for tracking events:
+
+-   **Cart Changes**: The `useVisuallyConnect` hook tracks changes to the cart via `useCart` and calls `window.visually.onCartChanged(transformedCart)`. The `transformCart` function formats the cart data correctly.
+-   **Page Navigation**: The `useVisuallyConnect` hook uses `useLocation` to determine the page type (`home`, `product`, `collection`) and calls `window.visually.pageTypeChanged()`.
+-   **Product/Variant Views**: On Product Detail Pages (PDPs), when a product is loaded or a variant is selected, the application must notify Visually. The `transformProduct` and `transformVariant` helper functions in `Visually.jsx` should be used to format the data before sending it to `window.visually.onProductPageLoaded()` and `window.visually.onVariantChanged()`.
 
 ## Development Guidelines
 
-1. Always check existing code in the project to understand which specific React Router hooks and components are being used
-2. When generating new code or modifying existing code, ensure all routing-related imports come from the correct React Router packages
-3. If following documentation or examples based on Remix, adapt the code to use React Router equivalents
-
-When working in this codebase, always follow the React Router patterns that are already established in the existing code.
-
-For more information, consult the official Remix to React Router upgrade guide: https://reactrouter.com/upgrading/remix
+1.  **Prioritize `Visually.jsx`**: When implementing Visually-related features, always refer to the hooks, components, and helper functions in `app/components/Visually.jsx` as the source of truth.
+2.  **Use Existing Hooks**: Leverage the provided `useVisuallyConnect` hook for the main integration logic.
+3.  **Correct Data Transformation**: Use the `transformCart`, `transformProduct`, and `transformVariant` functions to ensure data sent to Visually has the correct structure.
+4.  **Follow Established Patterns**: When adding tracking for new events, replicate the existing patterns of using React hooks (`useEffect`) to watch for state changes and call the appropriate `window.visually.*` function.
+5.  **Consult `README.md`**: The `README.md` file provides a high-level overview and visual guide to the integration points.
