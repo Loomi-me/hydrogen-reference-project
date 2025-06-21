@@ -60,58 +60,65 @@ function loadDeferredData({context}) {
   };
 }
 
+function InfoHeader() {
+  return (
+    <div>
+      <h1
+        style={{
+          fontSize: '3.5rem',
+          textAlign: 'center',
+          padding: '3rem 1rem',
+          margin: '0',
+          backgroundColor: '#f8f9fa',
+          borderBottom: '2px solid #dee2e6',
+          color: '#212529',
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          fontWeight: '700',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+        }}
+      >
+        Visually.io Reference Headless Store
+      </h1>
+      <div
+        style={{
+          width: '100%',
+          background: '#fff',
+          padding: '2rem 0',
+          borderRadius: '1.5rem',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: '2rem 0',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        }}
+      >
+        <img
+          src={logo}
+          alt="Visually.io Logo"
+          style={{
+            width: '100%',
+            maxWidth: '600px',
+            height: 'auto',
+            display: 'block',
+            borderRadius: '1rem',
+            background: '#fff',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
+
   return (
     <div className="home">
       <FeaturedCollection collection={data.featuredCollection} />
-      <div>
-        <h1
-          style={{
-            fontSize: '3.5rem',
-            textAlign: 'center',
-            padding: '3rem 1rem',
-            margin: '0',
-            backgroundColor: '#f8f9fa',
-            borderBottom: '2px solid #dee2e6',
-            color: '#212529',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            fontWeight: '700',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-          }}
-        >
-          Visually.io Reference Headless Store
-        </h1>
-        <div
-          style={{
-            width: '100%',
-            background: '#fff',
-            padding: '2rem 0',
-            borderRadius: '1.5rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            margin: '2rem 0',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-          }}
-        >
-          <img
-            src={logo}
-            alt="Visually.io Logo"
-            style={{
-              width: '100%',
-              maxWidth: '600px',
-              height: 'auto',
-              display: 'block',
-              borderRadius: '1rem',
-              background: '#fff',
-            }}
-          />
-        </div>
-      </div>
+      <InfoHeader />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
   );
