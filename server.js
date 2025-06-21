@@ -1,5 +1,7 @@
 // Virtual entry point for the app
 import {storefrontRedirect} from '@shopify/hydrogen';
+// createRequestHandler can be imported from "@remix-run/express" in order to server the app from an express server
+// or cloudflare workers, checkout examples here: https://github.com/remix-run/remix/tree/main/templates
 import {createRequestHandler} from '@shopify/remix-oxygen';
 import {createAppLoadContext} from '~/lib/context';
 
@@ -14,6 +16,7 @@ export default {
    * @return {Promise<Response>}
    */
   async fetch(request, env, executionContext) {
+    // First this handler is called and then entry.server.js handler
     try {
       const appLoadContext = await createAppLoadContext(
         request,

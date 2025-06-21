@@ -17,6 +17,7 @@ export default async function handleRequest(
   reactRouterContext,
   context,
 ) {
+  // DOCS about this file - https://remix.run/docs/en/main/file-conventions/entry.server
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
