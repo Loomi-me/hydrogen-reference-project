@@ -22,7 +22,7 @@ The project is Based on the following [Hydrogen quickstart tutorial](https://sho
 ### Visually Integration Overview
 
 Most of the necessary code for the Visually integration is located in a single file:
-- `app/components/Visually.jsx`
+- `app/components/Visually.jsx` ( [Visually.jsx](app/components/Visually.jsx)) 
 
 <span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main aspects:</span>
@@ -42,7 +42,7 @@ Or files that import the `Visually.jsx` components and Methods.
 
 ### Adding the visually.io scripts to the page head And Configuring the Alias and Api key
 
- - `app/root.jsx`
+ - `app/root.jsx` ( [root.jsx](app/root.jsx) )
   <img alt="img.png" src="readme_assets/img.png" width="700"/>
 
 The Alias and Api key can be found in the [Visually dashboard](https://app.visually.io/dashboard) after you install the Visually app.
@@ -51,7 +51,7 @@ Account Settings > Manual Script Integration
 
 ### Allowlisting visually io domain scripts in the CSP header
 
-- `app/entry.server.jsx`
+- `app/entry.server.jsx` ( [entry.server.jsx](app/entry.server.jsx) ) 
 
 <img alt="img_2.png"  src="readme_assets/img_2.png" width="700"/>
 
@@ -60,7 +60,7 @@ Visually uses `eval` in order to generate and execute dynamic javascript.
 
 ### Initializing Visually SDK
 
-- `app/components/PageLayout.jsx`
+- `app/components/PageLayout.jsx` ( [PageLayout.jsx](app/components/PageLayout.jsx) )
 
 This component initializes the Visually SDK with the instrument interface and store state reflection.
 Its a simple wrapper around a hook `useVisuallyConnect` from `app/components/Visually.jsx`<br/>
@@ -74,7 +74,7 @@ Your project mau be different and you may use different hooks or even your own c
 
 ### Notify visually when a pdp is loaded with its specific product and also when a variant is selected
 
-- `app/routes/products.$handle.jsx`
+- `app/routes/products.$handle.jsx` ( [products.$handle.jsx](app/routes/products.%24handle.jsx) )
  
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
 ## Notice !
