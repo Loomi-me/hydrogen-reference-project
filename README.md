@@ -29,7 +29,7 @@ Most of the necessary code for the Visually integration is located in a single f
 
 ### The "Instrument" 
 
-an interface implementation that provides programmatic control over store operations Required for Visually Upsells and Analytics:
+an interface implementation that provides programmatic control over store operations required for Visually Upsells and Analytics:
   - Cart management (add/remove items, open/close cart drawer, update cart attributes)
 
 > ⚠️ **Important**: Implementing the update cart-attributes method in the Visually instrument  
@@ -40,7 +40,6 @@ an interface implementation that provides programmatic control over store operat
 > - Tracking subscription contracts in orders
 >
 > Make sure this functionality is properly implemented to ensure accurate tracking and analysis.
-> Clients Often forget to implement this method.
 
 For the Full list of methods and properties required for the instrument interface, please refer to [Visually.d.ts](Visually.d.ts)
 
