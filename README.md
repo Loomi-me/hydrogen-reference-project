@@ -3,6 +3,20 @@
 ------
   <img alt="img.png" src="readme_assets/logo-wide.webp" width="700"/>
 
+## Table of Contents
+
+2. [Visually Integration Overview](#visually-integration-overview)
+  - [Instrument Interface](#the-instrument-interface)
+  - [Store State Reflection](#store-state-reflection)
+3. [Integration](#key-integration-points)
+  - [Adding Visually Scripts and Configuring Alias/API Key](#adding-the-visuallyio-scripts-to-the-page-head-and-configuring-the-alias-and-api-key)
+  - [Allowlisting Visually Scripts in Content Security Policy](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
+  - [Initializing the Visually SDK](#initializing-visually-sdk)
+  - [PDP and Variant Selection Tracking](#notify-visually-when-a-pdp-is-loaded-with-its-specific-product-and-also-when-a-variant-is-selected)
+4. [Important Notice](#notice-)
+
+---
+
 
 This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts. It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
 The project is Based on the following [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
