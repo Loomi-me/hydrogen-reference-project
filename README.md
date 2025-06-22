@@ -1,6 +1,9 @@
 # Visually Hydrogen Reference Project 🦄
 
-------
+This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts. 
+It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
+The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
+
   <img alt="img.png" src="readme_assets/visually_plus.png" width="700"/>
 
 ## Table of Contents
@@ -16,8 +19,6 @@
 ---
 
 
-This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts. It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
-The project is Based on the following [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
 
 ### Visually Integration Overview
 
