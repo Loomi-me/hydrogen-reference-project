@@ -40,7 +40,7 @@ Most of the necessary code for the Visually integration is located in a single f
 
 Or files that import the `Visually.jsx` components and Methods.
 
-### Adding the visually.io scripts to the page head And Configuring the Alias and Api key
+### Adding the visually.io scripts to the page <head> And Configuring the Alias and Api key
 
  - `app/root.jsx` ( [root.jsx](app/root.jsx) )
 
