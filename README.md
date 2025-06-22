@@ -12,8 +12,8 @@ The project is Based on the following [Hydrogen quickstart tutorial](https://sho
 Most of the necessary code for the Visually integration is located in a single file:
 - `app/components/Visually.jsx`
 
-<span style="font-size:1.25em"><b>Details the core functionality of the Visually integration implementation.</b><br/>
-  The integration revolves around two main components:</span>
+<span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
+  The integration revolves around two main aspects:</span>
 
 1. The "Instrument" interface—Provides programmatic control over store operations including:
   - Cart management (add/remove items, open/close cart drawer)
