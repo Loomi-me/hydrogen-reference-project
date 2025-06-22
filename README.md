@@ -28,12 +28,25 @@ Most of the necessary code for the Visually integration is located in a single f
   The integration revolves around two main aspects:</span>
 
 1. The "Instrument" interface—Provides programmatic control over store operations Required for Visually Upsells and Analytics:
-  - Cart management (add/remove items, open/close cart drawer)
+  - Cart management (add/remove items, open/close cart drawer, update cart attributes)
+
+> ⚠️ **Important**: Implementing the update cart-attributes method in the visually instrument  (see Visually.md) 
+> is crucial as it serves two essential purposes:
+> - Detecting the SPA sales channel
+> - Attributing orders to experiences for analytics purposes
+> - Checkout targeting for upsells and recommendations
+>
+> Make sure this functionality is properly implemented to ensure accurate tracking and analysis.
+> Clients Often forget to implement this method.
+
+
+
 
 2. Store State Reflection. Required event tracking for key store changes:
   - Cart modifications
   - Product page navigation
   - Variant selection
+  - adding cart attributes
   - Other relevant state changes
 
 ## Key Integration Points
@@ -80,12 +93,14 @@ Your project mau be different and you may use different hooks or even your own c
  
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
 
-## Notice !
+
+> ⚠️ **Important**: 
+Visually Scripts are intentionally at the top of the `<head>` in the document.
+In order to prevent flickering and delays our javascript sdk needs to run as fast as possible on every page load.
+
 
 <img alt="img_4.png"  src="readme_assets/img_4.png" width="700"/>
 
-Visually Scripts are intentionally at the top of the `<head>` in the document.
-In order to prevent flickering and delays our javascript sdk needs to run as fast as possible on every page load.
 
 
 ---

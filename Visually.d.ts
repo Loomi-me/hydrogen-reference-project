@@ -56,3 +56,23 @@ export type CurrentProduct = {
   id: number,
   price: number // current variant price in cents
 }
+
+export interface VisuallyInstrument {
+  country?: string;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
+  addToCart: (variantId: string, quantity: number) => Promise<any>; // should create cart if none
+  cartClear: () => void;
+  localeChanged: (locale: string) => void; // en|es|de|....
+  cartAddAttributes: (attributes: { attributes: Array<{ key: string, value: string }> }, cb: (cart: any) => void) => void
+  initialProductId: number;
+  pageType: string;
+  initialVariantId: number;
+  initialVariantPrice: number;
+  initialUserId: string;
+  initialLocale: string;
+  initialCurrency: string;
+  initialCart: any,
+  customerTags: Array<string>,
+  currentProduct?: CurrentProduct
+}
