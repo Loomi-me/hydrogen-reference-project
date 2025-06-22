@@ -7,8 +7,10 @@ will walk you through the process step by step.
 
 DISCLAIMER: this is an example of integration to the most basic structure of pack-digital, if your code looks different
 please contact our technical support team.
-This example is also based on the legacy pack-digital Next.js implementation, if you are using the latest pack-digital
-version, please refer to the [README.md](README.md) file.
+This example is also based on the legacy pack-digital Next.js implementation .
+
+## If you are using the latest pack-digital version
+## please refer to the [Hydrogen Implementation](README.md).
 
 
 ---
