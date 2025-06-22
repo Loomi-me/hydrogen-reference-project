@@ -85,22 +85,5 @@ In order to prevent flickering and delays our javascript sdk needs to run as fas
 
 
 ---
-# Running the project:
-
-- Node.js version 18.0.0 or higher
-
-```bash
-npm create @shopify/hydrogen@latest
-```
-
-## Building for production
-
-```bash
-npm run build
-```
-
-## Local development
-
-```bash
-npm run dev
-```
+For a comprehensive low-level framework-agnostic guide 
+please refer to [SPA-INTEGRATION.md](SPA-INTEGRATION.md)
