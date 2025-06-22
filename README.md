@@ -8,7 +8,9 @@ This project serves as a reference implementation for integrating Visually with 
 The project is Based on the following [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
 
 ### Visually Integration Overview
-- `app/components/Visually.jsx` 
+
+Most of the necessary code for the Visually integration is located in a single file:
+- `app/components/Visually.jsx`
 
 <span style="font-size:1.25em"><b>Details the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main components:</span>
