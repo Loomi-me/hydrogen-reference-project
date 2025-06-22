@@ -27,7 +27,9 @@ Most of the necessary code for the Visually integration is located in a single f
 <span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main aspects:</span>
 
-1. The "Instrument" interface—Provides programmatic control over store operations Required for Visually Upsells and Analytics:
+### The "Instrument" 
+
+an interface implementation that provides programmatic control over store operations Required for Visually Upsells and Analytics:
   - Cart management (add/remove items, open/close cart drawer, update cart attributes)
 
 > ⚠️ **Important**: Implementing the update cart-attributes method in the Visually instrument  
@@ -43,8 +45,9 @@ Most of the necessary code for the Visually integration is located in a single f
 For the Full list of methods and properties required for the instrument interface, please refer to [Visually.d.ts](Visually.d.ts)
 
 
+### Store State Reflection. 
 
-2. Store State Reflection. Required event tracking for key store changes:
+Required event tracking for key store changes:
   - Cart modifications
   - Product page navigation
   - Variant selection
