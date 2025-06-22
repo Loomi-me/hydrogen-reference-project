@@ -60,7 +60,7 @@ Your project mau be different and you may use different hooks or even your own c
 
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
 
-### Notify visually when a pdp is loaded with its specific info and also when a variant is selected
+### Notify visually when a pdp is loaded with its specific product and also when a variant is selected
 
 - `app/routes/products.$handle.jsx`
  
