@@ -1,6 +1,6 @@
 # Visually.io + Pack Digital (Next.js) Integration
 
-![img.png](img.png)
+![img.png](readme_assets/pack.png)
 
 Welcome to our comprehensive tutorial on integrating Visually.io into your pack-digital headless storefront. This guide
 will walk you through the process step by step.
