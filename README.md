@@ -30,7 +30,7 @@ Most of the necessary code for the Visually integration is located in a single f
 1. The "Instrument" interface—Provides programmatic control over store operations Required for Visually Upsells and Analytics:
   - Cart management (add/remove items, open/close cart drawer, update cart attributes)
 
-> ⚠️ **Important**: Implementing the update cart-attributes method in the visually instrument  
+> ⚠️ **Important**: Implementing the update cart-attributes method in the Visually instrument  
 > is crucial as it serves several essential purposes:
 > - Detecting the SPA sales channel
 > - Attributing orders to experiences for analytics purposes
