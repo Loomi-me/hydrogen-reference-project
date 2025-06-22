@@ -19,27 +19,11 @@ export function VisuallyConnect() {
  * Sets up Visually connect event handlers and listeners.
  */
 const useVisuallyConnect = () => {
-
-  const [isLoaded, setIsLoaded] = useState(false);
-  const cartWithActions = useCart();
-  const {open} = useAside();
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const abortController = new AbortController();
-    const handleVisuallyInit = () => {
-      setIsLoaded(!!window.visually?.visuallyConnect);
-    };
-    window.addEventListener('x-visually-init', handleVisuallyInit, {
-      once: true,
-      signal: abortController.signal,
-    });
-    return () => {
-      abortController.abort();
-    };
-  }, []);
+  const isLoaded = useIsVisuallyLoaded();
 
   const {shop} = useAnalytics();
+  const {open} = useAside();
+  const cartWithActions = useCart();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -75,12 +59,16 @@ const useVisuallyConnect = () => {
   }, [isLoaded, pageType]);
 
   useEffect(() => {
+    if (!isLoaded) return;
     maybe(() => window.visually.localeChanged(shop?.currency));
-  }, [shop?.currency]);
+  }, [isLoaded,shop?.currency]);
+
 };
 
 /**
  * VisuallySDK injects script and link tags necessary for Visually SDK.
+ * we intentionally don't use react-router Link and Script components to ensure
+ * our code is injected to the top of the document head
  * @returns {JSX.Element} React fragment with link and script tags.
  */
 export function VisuallySDK({alias, clientKey}) {
@@ -230,12 +218,43 @@ export function transformProduct(product) {
   });
 }
 
-/**
- * Returns a stable hash of an object by stringifying it with sorted keys.
- * @param {object} obj Object to hash.
- * @returns {string} The hashed string representation.
- */
-export function hash(obj) {
+export const useVisuallyOnPDPChange = (product, selectedVariant) => {
+  const isLoaded = useIsVisuallyLoaded();
+  const transformedProduct = transformProduct(product);
+  useEffect(() => {
+    if (!isLoaded) return;
+    maybe(() => window.visually.productChanged(transformedProduct));
+  }, [isLoaded,hash(transformedProduct)]);
+
+  const transformedVariant = transformVariant(selectedVariant);
+  useEffect(() => {
+    if (!isLoaded) return;
+    maybe(() => window.visually.variantChanged(transformedVariant));
+  }, [isLoaded,hash(transformedVariant)]);
+
+}
+
+
+function hash(obj) {
   if (!obj) return '';
   return JSON.stringify(obj, Object.keys(obj).sort());
 }
+const useIsVisuallyLoaded = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const abortController = new AbortController();
+    const handleVisuallyInit = () => {
+      setIsLoaded(!!window.visually?.visuallyConnect);
+    };
+    window.addEventListener('x-visually-init', handleVisuallyInit, {
+      once: true,
+      signal: abortController.signal,
+    });
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+  return isLoaded;
+};

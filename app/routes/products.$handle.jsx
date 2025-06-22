@@ -11,8 +11,7 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
-import {hash, maybe, transformProduct, transformVariant} from '~/components/Visually.jsx';
-import {useEffect} from 'react';
+import { useVisuallyOnPDPChange} from '~/components/Visually.jsx';
 
 /**
  * @type {MetaFunction<typeof loader>}
@@ -77,15 +76,7 @@ export default function Product() {
     getAdjacentAndFirstAvailableVariants(product),
   );
 
-  const transformedProduct = transformProduct(product);
-  useEffect(() => {
-    maybe(() => window.visually.productChanged(transformedProduct));
-  }, [hash(transformedProduct)]);
-
-  const transformedVariant = transformVariant(selectedVariant);
-  useEffect(() => {
-    maybe(() => window.visually.variantChanged(transformedVariant));
-  }, [hash(transformedVariant)]);
+  useVisuallyOnPDPChange(product,selectedVariant)
 
   useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
   const productOptions = getProductOptions({
