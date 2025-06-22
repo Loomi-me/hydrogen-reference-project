@@ -9,9 +9,10 @@ DISCLAIMER: this is an example of integration to the most basic structure of pac
 please contact our technical support team.
 This example is also based on the legacy pack-digital Next.js implementation .
 
-## If you are using the latest pack-digital version
-## please refer to the [Hydrogen Implementation](README.md).
 
+> ⚠️ **Important**: If you are using the latest pack-digital version, 
+please refer to the [Hydrogen Implementation example](README.md).
+ 
 
 ---
 
