@@ -51,8 +51,7 @@ Required event tracking for key store changes:
   - Cart modifications
   - Product page navigation
   - Variant selection
-  - adding cart attributes
-  - Other relevant state changes
+  - ...
 
 ## Key Integration Points
 
