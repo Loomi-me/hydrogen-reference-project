@@ -12,7 +12,6 @@
   - [Allowlisting Visually Scripts in Content Security Policy](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
   - [Initializing the Visually SDK](#initializing-visually-sdk)
   - [PDP and Variant Selection Tracking](#notify-visually-when-a-pdp-is-loaded-with-its-specific-product-and-also-when-a-variant-is-selected)
-4. [Important Notice](#notice-)
 
 ---
 
