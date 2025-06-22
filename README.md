@@ -5,10 +5,9 @@
 
 ## Table of Contents
 
-2. [Visually Integration Overview](#visually-integration-overview)
-  - [Instrument Interface](#the-instrument-interface)
-  - [Store State Reflection](#store-state-reflection)
-3. [Integration](#key-integration-points)
+ [Overview](#visually-integration-overview)
+
+ [Integration](#key-integration-points)
   - [Adding Visually Scripts and Configuring Alias/API Key](#adding-the-visuallyio-scripts-to-the-page-head-and-configuring-the-alias-and-api-key)
   - [Allowlisting Visually Scripts in Content Security Policy](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
   - [Initializing the Visually SDK](#initializing-visually-sdk)
