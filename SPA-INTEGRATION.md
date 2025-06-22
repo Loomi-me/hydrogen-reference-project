@@ -5,7 +5,7 @@ This guide will walk you through the process step by step.
 It's intended for any SPA, framework-agnostic. 
 Be it Hydrogen, Next, Gatsby or something else.
 
-For a complete example of a Hydrogen store integration, please refer to our README.md in this projct.
+For a complete example of a Hydrogen store integration, please refer to [README.md](README.md)
 
 ## Table of Contents
 
