@@ -218,29 +218,34 @@ export function transformProduct(product) {
   });
 }
 
+/**
+ * Hook that updates Visually SDK with product and variant data. Should be called whenever
+ * a new PDP page loads or when a variant is selected on a PDP page.
+ * @param {object} product The product object from Shopify
+ * @param {object} selectedVariant The currently selected variant object
+ */
 export const useVisuallyOnPDPChange = (product, selectedVariant) => {
   const isLoaded = useIsVisuallyLoaded();
   const transformedProduct = transformProduct(product);
   useEffect(() => {
     if (!isLoaded) return;
     maybe(() => window.visually.productChanged(transformedProduct));
-  }, [isLoaded,hash(transformedProduct)]);
+  }, [isLoaded, hash(transformedProduct)]);
 
   const transformedVariant = transformVariant(selectedVariant);
   useEffect(() => {
     if (!isLoaded) return;
     maybe(() => window.visually.variantChanged(transformedVariant));
-  }, [isLoaded,hash(transformedVariant)]);
+  }, [isLoaded, hash(transformedVariant)]);
 
-}
-
+};
 
 function hash(obj) {
   if (!obj) return '';
   return JSON.stringify(obj, Object.keys(obj).sort());
 }
 const useIsVisuallyLoaded = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(!!window.visually?.visuallyConnect);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

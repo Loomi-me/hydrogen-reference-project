@@ -43,7 +43,7 @@ Or files that import the `Visually.jsx` components and Methods.
 ### Adding the visually.io scripts to the page head And Configuring the Alias and Api key
 
  - `app/root.jsx`
-  <img alt="img.png"  src="readme_assets/img.png" width="700"/>
+  <img alt="img.png" src="readme_assets/img.png" width="700"/>
 
 The Alias and Api key can be found in the [Visually dashboard](https://app.visually.io/dashboard) after you install the Visually app.
 Account Settings > Manual Script Integration
@@ -77,7 +77,6 @@ Your project mau be different and you may use different hooks or even your own c
 - `app/routes/products.$handle.jsx`
  
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
-
 ## Notice !
 <img alt="img_4.png"  src="readme_assets/img_4.png" width="700"/>
 
