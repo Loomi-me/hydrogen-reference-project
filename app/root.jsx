@@ -138,7 +138,10 @@ export function Layout({children}) {
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <link rel="stylesheet" href={resetStyles}></link>
       <link rel="stylesheet" href={appStyles}></link>
-      <VisuallySDK />
+      <VisuallySDK
+        alias={'PURETAKI'}
+        clientKey={'65515421926'}
+      />
       <Meta />
       <Links />
     </head>

@@ -73,7 +73,7 @@ const useVisuallyConnect = () => {
  * VisuallySDK injects script and link tags necessary for Visually SDK.
  * @returns {JSX.Element} React fragment with link and script tags.
  */
-export function VisuallySDK() {
+export function VisuallySDK({alias, clientKey}) {
   return (
     <>
       <link
@@ -85,12 +85,12 @@ export function VisuallySDK() {
       <link
         rel="preload"
         as="script"
-        href="https://live.visually-io.com/widgets/vsly-preact.min.js?k=js.65515421926&e=2&s=PURETAKI"
+        href={`"https://live.visually-io.com/widgets/vsly-preact.min.js?k=js.${clientKey}&e=2&s=${alias}"`}
       />
       <link
         rel="preload"
         as="script"
-        href="https://live.visually-io.com/cf/PURETAKI.js"
+        href={`https://live.visually-io.com/cf/${alias}.js`}
       />
       <link
         rel="preload"
@@ -99,11 +99,11 @@ export function VisuallySDK() {
       />
       <script
         type="text/javascript"
-        src="https://live.visually-io.com/widgets/vsly-preact.min.js?k=js.65515421926&e=2&s=PURETAKI"
+        src={`https://live.visually-io.com/widgets/vsly-preact.min.js?k=js.${clientKey}&e=2&s=${alias}`}
       />
       <script
         type="text/javascript"
-        src="https://live.visually-io.com/cf/PURETAKI.js"
+        src={`https://live.visually-io.com/cf/${alias}.js`}
       />
       <script
         type="text/javascript"
