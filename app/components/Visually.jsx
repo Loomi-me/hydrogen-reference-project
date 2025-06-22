@@ -4,11 +4,20 @@ import {useCart} from '@shopify/hydrogen-react';
 import {useAside} from '~/components/Aside.jsx';
 import {useAnalytics} from '@shopify/hydrogen';
 
+/**
+ * VisuallyConnect is a component that initializes visually connect hooks on mount.
+ * It does not render any UI.
+ * @returns {JSX.Element} An empty div.
+ */
 export function VisuallyConnect() {
   useVisuallyConnect();
   return <div />;
 }
 
+/**
+ * Custom hook to integrate with the Visually SDK.
+ * Sets up Visually connect event handlers and listeners.
+ */
 const useVisuallyConnect = () => {
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -17,7 +26,7 @@ const useVisuallyConnect = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    window.visually.analyticsProcessingAllowed = () => true // change this to false if user declined tracking consent
+    window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
     setIsLoaded(!!window.visually?.visuallyConnect);
   }, []);
 
@@ -60,6 +69,10 @@ const useVisuallyConnect = () => {
   }, [shop?.currency]);
 };
 
+/**
+ * VisuallySDK injects script and link tags necessary for Visually SDK.
+ * @returns {JSX.Element} React fragment with link and script tags.
+ */
 export function VisuallySDK() {
   return (
     <>
@@ -105,6 +118,13 @@ export function VisuallySDK() {
   );
 }
 
+/**
+ * Executes a function and returns its result, or a default value if it throws an error.
+ * @template T
+ * @param {() => T} f Function to execute.
+ * @param {T} [def=undefined] Default value to return if the function throws.
+ * @returns {T|undefined}
+ */
 export function maybe(f, def = undefined) {
   try {
     return f();
@@ -113,14 +133,20 @@ export function maybe(f, def = undefined) {
   }
 }
 
+/**
+ * Transforms a Shopify cart object into a format expected by the Visually SDK.
+ * @param {object} cart Cart object from Shopify's useCart.
+ * @returns {CartBase|undefined} Transformed cart object or undefined if cart is not provided.
+ */
 function transformCart(cart) {
   return cart
     ? {
       item_count: maybe(() => cart.lines.reduce((p, c) => p + c.quantity, 0)),
       attributes: cart?.attributes || [],
       items: cart.lines.map((l) => ({
+        // selling_plan_allocation:{selling_plan:{name:undefined}}, // add a selling plan if available
         handle: l.merchandise.product.handle,
-        price: maybe(() => parseFloat(l.cost.totalAmount.amount) * 100),
+        price: maybe(() => parseFloat(l.cost.totalAmount.amount) * 100), // PRICE IN CENTS
         product_id: maybe(() =>
           parseFloat(
             l.merchandise.product.id.replace('gid://shopify/Product/', ''),
@@ -135,7 +161,7 @@ function transformCart(cart) {
       })),
       currency: maybe(() => cart.cost.totalAmount.currencyCode, 0),
       total_price: maybe(
-        () => parseFloat(cart.cost.totalAmount.amount) * 100,
+        () => parseFloat(cart.cost.totalAmount.amount) * 100, // PRICE IN CENTS
         0,
       ),
       token: maybe(() => cart.id.replace('gid://shopify/Cart/', ''), ''),
@@ -143,6 +169,11 @@ function transformCart(cart) {
     : undefined;
 }
 
+/**
+ * Returns a string describing the page type based on the pathname.
+ * @param {string} pathname The current location pathname.
+ * @returns {'home'|'product'|'collection'|'other'} The resolved page type.
+ */
 function getPageType(pathname) {
   const pageType = 'other';
 
@@ -158,6 +189,11 @@ function getPageType(pathname) {
   return pageType;
 }
 
+/**
+ * Transforms a product variant object for use with Visually integrations.
+ * @param {object} selected The selected product variant.
+ * @returns {object} The transformed variant.
+ */
 export const transformVariant = (selected) => {
   return {
     id: selected?.id?.replace('gid://shopify/ProductVariant/', ''),
@@ -166,6 +202,11 @@ export const transformVariant = (selected) => {
   };
 };
 
+/**
+ * Transforms a product object for use with Visually integrations.
+ * @param {object} product The product object from Shopify.
+ * @returns {object|undefined} The transformed product or undefined if failed.
+ */
 export function transformProduct(product) {
   return maybe(() => {
     const selected = product.selectedOrFirstAvailableVariant;
@@ -179,6 +220,11 @@ export function transformProduct(product) {
   });
 }
 
+/**
+ * Returns a stable hash of an object by stringifying it with sorted keys.
+ * @param {object} obj Object to hash.
+ * @returns {string} The hashed string representation.
+ */
 export function hash(obj) {
   if (!obj) return '';
   return JSON.stringify(obj, Object.keys(obj).sort());
