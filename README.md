@@ -43,6 +43,8 @@ Account Settings > Manual Script Integration
 
 <img alt="img_2.png"  src="readme_assets/img_2.png" width="700"/>
 
+Notice that we also need to be allowd as `connectSrc` and also please include the `unsafe-eval` in the `scriptSrc`
+Visually uses `eval` in order to generate and execute dynamic javascript.
 
 ### Initializing Visually SDK
 
