@@ -31,10 +31,11 @@ Most of the necessary code for the Visually integration is located in a single f
   - Cart management (add/remove items, open/close cart drawer, update cart attributes)
 
 > ⚠️ **Important**: Implementing the update cart-attributes method in the visually instrument  
-> is crucial as it serves two essential purposes:
+> is crucial as it serves several essential purposes:
 > - Detecting the SPA sales channel
 > - Attributing orders to experiences for analytics purposes
-> - Checkout targeting for upsells and recommendations
+> - Advanced Checkout targeting for upsells and recommendations and preview of Checkout upsells
+> - Tracking subscription contracts in orders
 >
 > Make sure this functionality is properly implemented to ensure accurate tracking and analysis.
 > Clients Often forget to implement this method.
