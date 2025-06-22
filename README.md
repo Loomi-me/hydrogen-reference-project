@@ -27,7 +27,7 @@ Most of the necessary code for the Visually integration is located in a single f
 <span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main aspects:</span>
 
-1. The "Instrument" interface—Provides programmatic control over store operations including. Required for Visually Upsells:
+1. The "Instrument" interface—Provides programmatic control over store operations Required for Visually Upsells and Analytics:
   - Cart management (add/remove items, open/close cart drawer)
 
 2. Store State Reflection. Required event tracking for key store changes:
