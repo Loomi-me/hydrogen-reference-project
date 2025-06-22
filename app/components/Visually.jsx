@@ -26,14 +26,24 @@ const useVisuallyConnect = () => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
-    setIsLoaded(!!window.visually?.visuallyConnect);
+    const abortController = new AbortController();
+    const handleVisuallyInit = () => {
+      setIsLoaded(!!window.visually?.visuallyConnect);
+    };
+    window.addEventListener('x-visually-init', handleVisuallyInit, {
+      once: true,
+      signal: abortController.signal,
+    });
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   const {shop} = useAnalytics();
 
   useEffect(() => {
     if (!isLoaded) return;
+    window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
     window.visually.visuallyConnect({
       cartClear: () => cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
       addToCart: (variantId, quantity) => cartWithActions.linesAdd([
