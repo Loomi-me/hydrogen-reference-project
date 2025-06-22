@@ -139,8 +139,8 @@ export function Layout({children}) {
       <link rel="stylesheet" href={resetStyles}></link>
       <link rel="stylesheet" href={appStyles}></link>
       <VisuallySDK
-        alias={'PURETAKI'}
-        clientKey={'65515421926'}
+        alias={'STORE_ALIAS'}
+        clientKey={'STORE_API_KEY'}
       />
       <Meta />
       <Links />
