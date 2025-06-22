@@ -79,7 +79,9 @@ Your project mau be different and you may use different hooks or even your own c
 - `app/routes/products.$handle.jsx` ( [products.$handle.jsx](app/routes/products.%24handle.jsx) )
  
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
+
 ## Notice !
+
 <img alt="img_4.png"  src="readme_assets/img_4.png" width="700"/>
 
 Visually Scripts are intentionally at the top of the `<head>` in the document.
