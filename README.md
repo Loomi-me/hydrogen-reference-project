@@ -43,6 +43,7 @@ Or files that import the `Visually.jsx` components and Methods.
 ### Adding the visually.io scripts to the page head And Configuring the Alias and Api key
 
  - `app/root.jsx` ( [root.jsx](app/root.jsx) )
+
   <img alt="img.png" src="readme_assets/img.png" width="700"/>
 
 The Alias and Api key can be found in the [Visually dashboard](https://app.visually.io/dashboard) after you install the Visually app.
