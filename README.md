@@ -15,35 +15,43 @@ Most of the necessary code for the Visually integration is located in a single f
 <span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main aspects:</span>
 
-1. The "Instrument" interface—Provides programmatic control over store operations including:
+1. The "Instrument" interface—Provides programmatic control over store operations including. Required for Visually Upsells:
   - Cart management (add/remove items, open/close cart drawer)
 
-2. Store State Reflection—Implements event tracking for key store changes:
+2. Store State Reflection. Required event tracking for key store changes:
   - Cart modifications
   - Product page navigation
   - Variant selection
   - Other relevant state changes
 
-This integration enables essential Visually features including:
-
-- Audience targeting
-- Analytics collection
-- Dynamic upsell displays
-
 ## Key Integration Points
+
+Or files that import the `Visually.jsx` components and Methods.
+
 ### Adding the visually.io scripts to the page head </br>
+
+ - `app/root.jsx`
+
   <img alt="img.png"  src="readme_assets/img.png" width="700"/>
 
 ### Configuring the api key and the store alias
+
+- `app/components/Visually.jsx`
+
   In the above example: PURETAKI is the alias
   and 65515421926 is the key
-<img alt="img_1.png"  src="img_1.png" width="700"/>
-### White listing visually io domain scripts in the CSP header
+<img alt="img_1.png"  src="readme_assets/img_1.png" width="700"/>
+
+### Allowlisting visually io domain scripts in the CSP header
+
+- `app/entry.server.jsx`
+
 <img alt="img_2.png"  src="readme_assets/img_2.png" width="700"/>
-  at app/entry.server.jsx
 
 
 ### Initializing Visually SDK
+
+- `app/components/PageLayout.jsx`
 
 This component initializes the Visually SDK with the instrument interface and store state reflection.
 Its a simple wrapper around a hook `useVisuallyConnect` from `app/components/Visually.jsx`<br/>
@@ -56,6 +64,9 @@ Your project mau be different and you may use different hooks or even your own c
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
 
 ### Notify visually when a pdp is loaded with its specific info and also when a variant is selected
+
+- `app/routes/products.$handle.jsx`
+ 
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
 
 ## Notice !
