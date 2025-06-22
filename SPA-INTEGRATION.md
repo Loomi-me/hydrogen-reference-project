@@ -48,7 +48,7 @@ and `<STORE_ALIAS>` with the values provided to you by Visually.io.
 </html>
 ```
 
-## Notify our SDK on context changes:gg
+## Notify our SDK on context changes:
 
 To enable Visually.io to send analytics and track the user's journey throughout the session, 
 call the appropriate Visually SDK methods in response to specific events in the application.
