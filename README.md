@@ -28,7 +28,7 @@ Most of the necessary code for the Visually integration is located in a single f
 
 Or files that import the `Visually.jsx` components and Methods.
 
-### Adding the visually.io scripts to the page head </br>
+### Adding the visually.io scripts to the page head And Configuring the Alias and Api key
 
  - `app/root.jsx`
   <img alt="img.png"  src="readme_assets/img.png" width="700"/>
@@ -36,14 +36,6 @@ Or files that import the `Visually.jsx` components and Methods.
 The Alias and Api key can be found in the [Visually dashboard](https://app.visually.io/dashboard) after you install the Visually app.
 Account Settings > Manual Script Integration
  
-
-### Configuring the api key and the store alias
-
-- `app/components/Visually.jsx`
-
-  In the above example: PURETAKI is the alias
-  and 65515421926 is the key
-<img alt="img_1.png"  src="readme_assets/img_1.png" width="700"/>
 
 ### Allowlisting visually io domain scripts in the CSP header
 
