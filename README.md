@@ -1,7 +1,7 @@
 # Visually Hydrogen Reference Project 🦄
 
 ------
-  <img alt="img.png" src="readme_assets/logo-wide.webp" width="700"/>
+  <img alt="img.png" src="readme_assets/visually_plus.png" width="700"/>
 
 ## Table of Contents
 
