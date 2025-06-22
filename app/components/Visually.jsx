@@ -203,7 +203,7 @@ export const transformVariant = (selected) => {
 /**
  * Transforms a product object for use with Visually integrations.
  * @param {object} product The product object from Shopify.
- * @returns {object|undefined} The transformed product or undefined if failed.
+ * @returns {CurrentProduct|undefined} The transformed product or undefined if failed.
  */
 export function transformProduct(product) {
   return maybe(() => {
@@ -221,8 +221,9 @@ export function transformProduct(product) {
 /**
  * Hook that updates Visually SDK with product and variant data. Should be called whenever
  * a new PDP page loads or when a variant is selected on a PDP page.
- * @param {object} product The product object from Shopify
- * @param {object} selectedVariant The currently selected variant object
+ * @param {object} product The product object from Shopify.
+ * @param {object} selectedVariant The currently selected variant
+ * notice! make sure that transformProduct and transformVariant take all necessary fields for the object
  */
 export const useVisuallyOnPDPChange = (product, selectedVariant) => {
   const isLoaded = useIsVisuallyLoaded();

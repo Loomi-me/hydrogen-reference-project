@@ -43,3 +43,16 @@ export interface CartBase {
   original_total_price?: number;
   item_count: number
 }
+
+export type CurrentProduct = {
+  variants: [
+    {
+      id: number,
+      price: number, // in cents
+      iq: number // inventory quantity
+    }
+  ],
+  oos: boolean,
+  id: number,
+  price: number // current variant price in cents
+}
