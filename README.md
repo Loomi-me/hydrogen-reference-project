@@ -48,11 +48,10 @@ For the Full list of methods and properties required for the instrument interfac
 
 ### Store State Reflection. 
 
-Required event tracking for key store changes:
-  - Cart modifications
-  - Product page navigation
-  - Variant selection
-  - ...
+Visually needs to know the current state of the store, including:
+  - Current cart state
+  - Current product and variant information
+  - Current page type (e.g., product page, collection page, etc.)
 
 ## Key Integration Points
 
