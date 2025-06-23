@@ -82,12 +82,12 @@ Visually uses `eval` in order to generate and execute dynamic javascript.
 - `app/components/PageLayout.jsx` ( [PageLayout.jsx](app/components/PageLayout.jsx) )
 
 This component initializes the Visually SDK with the instrument interface and store state reflection.
-Its a simple wrapper around a hook `useVisuallyConnect` from `app/components/Visually.jsx`<br/>
+It's a simple wrapper around a hook `useVisuallyConnect` from `app/components/Visually.jsx`<br/>
 In this example it uses the In this example it uses the hydrogen [`useCart`](https://shopify.dev/docs/api/hydrogen-react/2025-04/hooks/usecart) hook.<br/>
 It also uses the `useAside()` hook to open and close the cart drawer.<br/>
 For this reason it needs to be a descendant of `CartProvider` component. And the `AsideProvider`<br/>
 However this is not the only way to implement the instrument interface.<br/>
-Your project mau be different and you may use different hooks or even your own custom implementation.<br/>
+Your project may be different, you may use different hooks and your own custom implementation.<br/>
 
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
 
