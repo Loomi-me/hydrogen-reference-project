@@ -46,7 +46,7 @@ an interface implementation that provides programmatic control over store operat
 For the Full list of methods and properties required for the instrument interface, please refer to [Visually.d.ts](Visually.d.ts)
 
 
-### Store State Reflection. 
+### Store State Reflection
 
 Visually needs to know the current state of the store, including:
   - Current cart state
