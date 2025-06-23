@@ -94,15 +94,23 @@ Your project may be different, you may use different hooks and your own custom i
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
 
 > ⚠️ **Important**:
-Visually.jsx implements different object transformer functions that receive the cart and current product as parameters,
+Visually.jsx implements different object transformer functions that receive the cart or current product as parameters,
 > and return a transformed object used by the Visually SDK to track the current state of the store.
-> Your implementation may differ, but the main idea is to provide visually runtime the Cart and Current Product objects
+> Your implementation may differ, but the main idea is to provide visually runtime the `Cart` and `Current Product` objects
 > in the shape it expects.
 > see Visually.d.ts for the full type definitions of the `Cart` and `CurrentProduct` objects that should be returned by the transformer functions.
 
+```javascript
+// you will probably need to re-implement these functions in Visualy.jsx 
+// to transform the cart and product objects to the shape expected by the Visually SDK
+function transformCart(cart: Object): CartBase | undefined
+function transformProduct(product: Object): CurrentProduct | undefined
+function transformVariant(product: Object): CurrentVariant | undefined
+```
 
 
-### Notify visually when a pdp is loaded with its specific product and also when a variant is selected
+
+### Notify visually when a pdp is loaded with its specific product and also when a specific variant is selected
 
 - `app/routes/products.$handle.jsx` ( [products.$handle.jsx](app/routes/products.%24handle.jsx) )
  

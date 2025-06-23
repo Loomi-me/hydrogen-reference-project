@@ -44,18 +44,17 @@ export interface CartBase {
   item_count: number
 }
 
+type CurrentVariant = {
+  id: number;
+  price: number; // in cents
+  iq: number; // inventory quantity
+};
 export type CurrentProduct = {
-  variants: [
-    {
-      id: number,
-      price: number, // in cents
-      iq: number // inventory quantity
-    }
-  ],
-  oos: boolean,
-  id: number,
-  price: number // current variant price in cents
-}
+  variants: [CurrentVariant];
+  oos: boolean;
+  id: number;
+  price: number; // current variant price in cents
+};
 
 export interface VisuallyInstrument {
   country?: string;

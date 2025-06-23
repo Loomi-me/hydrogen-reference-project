@@ -136,8 +136,7 @@ export function maybe(f, def = undefined) {
  * @param {object} cart Cart object from Shopify's useCart.
  * @returns {CartBase|undefined} Transformed cart object or undefined if cart is not provided.
  */
-function transformCart(cart) {
-  return cart
+function transformCart(cart) {  return cart
     ? {
       item_count: maybe(() => cart.lines.reduce((p, c) => p + c.quantity, 0)),
       attributes: cart?.attributes || [],
