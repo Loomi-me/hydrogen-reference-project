@@ -24,7 +24,9 @@ The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/
 ### Visually Integration Overview
 
 Most of the necessary code for the Visually integration is located in a single file:
+You are encouraged to explore the code its code to get the feeling of how the integration works.
 - `app/components/Visually.jsx` ( [Visually.jsx](app/components/Visually.jsx)) 
+
 
 <span style="font-size:1.25em"><b>It Includes the core functionality of the Visually integration implementation.</b><br/>
   The integration revolves around two main aspects:</span>
@@ -90,6 +92,15 @@ However this is not the only way to implement the instrument interface.<br/>
 Your project may be different, you may use different hooks and your own custom implementation.<br/>
 
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
+
+> ⚠️ **Important**:
+Visually.jsx implements different object transformer actions that receive the cart and current product as parameters,
+> and return a transformed object used by the Visually SDK to track the current state of the store.
+> Your implementation may differ, but the main idea is to provide visually runtime the Cart and Current Product objects
+> in the shape it expects.
+> see Visually.d.ts for the full type definitions of the `Cart` and `CurrentProduct` objects that should be returned by the transformer functions.
+
+
 
 ### Notify visually when a pdp is loaded with its specific product and also when a variant is selected
 
