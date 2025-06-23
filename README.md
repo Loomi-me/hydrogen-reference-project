@@ -57,7 +57,7 @@ Visually needs to know the current state of the store, including:
 
 Or files that import the `Visually.jsx` components and Methods.
 
-### Adding the visually.io scripts to the page <head> And Configuring the Alias and Api key
+### Adding the visually.io scripts to the document <head> And Configuring the Alias and Api key
 
  - `app/root.jsx` ( [root.jsx](app/root.jsx) )
 
