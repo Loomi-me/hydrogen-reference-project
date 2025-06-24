@@ -113,8 +113,10 @@ function transformVariant(product: Object): CurrentVariant | undefined
 ```
 
 
+### PDP
 
-### Notify visually when a pdp is loaded with its specific product and also when a specific variant is selected
+Notify visually when a pdp is loaded with its specific product 
+and also when a specific variant is selected
 
 - `app/routes/products.$handle.jsx` ( [products.$handle.jsx](app/routes/products.%24handle.jsx) )
  
