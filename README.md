@@ -117,6 +117,10 @@ function transformVariant(product: Object): CurrentVariant | undefined
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
 
 
+---
+
+### Notice
+
 > ⚠️ **Important**: 
 Visually Scripts are intentionally at the top of the `<head>` in the document.
 In order to prevent flickering and delays our javascript sdk needs to run as fast as possible on every page load.
