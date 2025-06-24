@@ -96,9 +96,11 @@ Your project may be different, you may use different hooks and your own custom i
 > ⚠️ **Important**:
 Visually.jsx implements different object transformer functions that receive the cart or current product as parameters,
 > and return a transformed object used by the Visually SDK to track the current state of the store.
-> Your implementation may differ, but the main idea is to provide visually runtime the `Cart` and `Current Product` objects
-> in the shape it expects.
-> see Visually.d.ts for the full type definitions of the `Cart` ,`CurrentProduct` and `CurrentVariant` objects that should be returned by the transformer functions.
+
+
+Your implementation may differ, but the main idea is to provide visually runtime the `Cart` and `Current Product` objects
+in the shape it expects.
+see Visually.d.ts for the full type definitions of the `Cart` ,`CurrentProduct` and `CurrentVariant` objects that should be returned by the transformer functions.
 
 ```javascript
 // you will probably need to re-implement these functions in Visualy.jsx 
