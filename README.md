@@ -1,7 +1,6 @@
 # Visually Hydrogen Reference Project 🦄
 
-<img alt="img.png" src="readme_assets/visually_plus.png" width="700"/>
-
+<img alt="img.png" src="readme_assets/visually_plus.png" width="700" style="background-color: black; border-radius: 20px;"/>
 This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts.
 It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
 The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
@@ -96,7 +95,7 @@ Your project may be different, you may use different hooks and your own custom i
 #### Tansforming the Cart / Cyrrent product
 
 > ⚠️ **Important**:
-Visually.jsx implements different object transformer functions that receive the cart or current product as parameters,
+> Visually.jsx implements different object transformer functions that receive the cart or current product as parameters,
 > and return a transformed object used by the Visually SDK to track the current state of the store.
 
 
@@ -127,9 +126,9 @@ and also when a specific variant is selected
 
 ### Notice
 
-> ⚠️ **Important**: 
-Visually Scripts are intentionally at the top of the `<head>` in the document.
-In order to prevent flickering and delays our javascript sdk needs to run as fast as possible on every page load.
+> ⚠️ **Important**:
+> Visually Scripts are intentionally at the top of the `<head>` in the document.
+> In order to prevent flickering and delays our javascript sdk needs to run as fast as possible on every page load.
 
 
 <img alt="img_4.png"  src="readme_assets/img_4.png" width="700"/>
