@@ -136,14 +136,42 @@ In order to prevent flickering and delays our javascript sdk needs to run as fas
 
 ---
 
+
+## Privacy
+To respect customer tracking consent, implement the following method:
+
+```typescript
+    window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
+```
+This ensures that analytics data is only processed when consent has been granted.
+Visually will query the consent status before sending any analytics data.
+
+
+## Allowed domains
+
+If the SPA has a security mechanism that allows the website to run only on specific domains
+
+We require to add the following domains to the domains 'allow list'
+
+- visually.io
+
+- loomi.me
+
+- vsly.local:8000
+
+---
+
 # Check List
 - add Visually scripts to the document head and configure the alias and api key<br/>
 - allow Visually.io scripts domain in the CSP header<br/>
 - initialize the Visually SDK with the instrument interface and store state reflection<br/>
 - notify Visually when a PDP is loaded with its specific product and also when a specific variant is selected<br/>
 - implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK<br/>
-
+- handle user tracking concent by implementing analyticsProcessingAllowed
 
 ---
+
 For a comprehensive low-level framework-agnostic guide 
 please refer to [SPA-INTEGRATION.md](SPA-INTEGRATION.md)
+
+If you have any more questions or need any help, please don't hesitate to reach out to us.
