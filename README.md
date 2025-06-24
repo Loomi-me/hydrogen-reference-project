@@ -24,7 +24,7 @@ The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/
 ### Visually Integration Overview
 
 Most of the necessary code for the Visually integration is located in a single file:
-You are encouraged to explore the code its code to get the feeling of how the integration works.
+You are encouraged to explore its code to get the feeling of how the integration works.
 - `app/components/Visually.jsx` ( [Visually.jsx](app/components/Visually.jsx)) 
 
 
