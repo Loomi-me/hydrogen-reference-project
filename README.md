@@ -1,6 +1,7 @@
 # Visually Hydrogen Reference Project 🦄
 
 <img alt="img.png" src="readme_assets/visually_plus.png" width="700" style="background-color: black; border-radius: 20px;"/>
+
 This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts.
 It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
 The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
