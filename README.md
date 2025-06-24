@@ -133,11 +133,11 @@ In order to prevent flickering and delays our javascript sdk needs to run as fas
 ---
 
 # Check List
-1 - add Visually scripts to the document head and configure the alias and api key<br/>
-2 - allow Visually.io scripts domain in the CSP header<br/>
-3 - initialize the Visually SDK with the instrument interface and store state reflection<br/>
-4 - notify Visually when a PDP is loaded with its specific product and also when a specific variant is selected<br/>
-5 - implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK<br/>
+- add Visually scripts to the document head and configure the alias and api key<br/>
+- allow Visually.io scripts domain in the CSP header<br/>
+- initialize the Visually SDK with the instrument interface and store state reflection<br/>
+- notify Visually when a PDP is loaded with its specific product and also when a specific variant is selected<br/>
+- implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK<br/>
 
 
 ---
