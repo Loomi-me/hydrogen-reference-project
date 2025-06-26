@@ -245,7 +245,7 @@ function hash(obj) {
   return JSON.stringify(obj, Object.keys(obj).sort());
 }
 const useIsVisuallyLoaded = () => {
-  const [isLoaded, setIsLoaded] = useState(!!window.visually?.visuallyConnect);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

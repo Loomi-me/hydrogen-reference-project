@@ -1,4 +1,3 @@
-import {CartForm} from '@shopify/hydrogen';
 import {useCart} from '@shopify/hydrogen-react';
 
 /**
