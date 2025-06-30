@@ -122,6 +122,21 @@ and also when a specific variant is selected
  
 <img alt="img_3.png"  src="readme_assets/img_3.png" width="700"/>
 
+### Change the headless url in the Visually Dashboard
+
+To change the url of the headless storefront in the Visually dashboard, follow these steps:
+
+Open the [Account Settings](https://visually.io/shop-settings) page.
+
+Scroll down to the "Store Domain" section and change it to the URL of your headless storefront.
+Click the "Save" button to apply the changes.
+
+![img.png](readme_assets/img_domain.png)
+
+Once applied Visually the editor will load the store from this url
+![img_1.png](readme_assets/img_domain_2.png)
+
+The left upper corner of the screen will show the current store domain.
 
 ---
 
@@ -151,7 +166,7 @@ Visually will query the consent status before sending any analytics data.
 
 If the SPA has a security mechanism that allows the website to run only on specific domains
 
-We require to add the following domains to the domains 'allow list'
+We require to add the following domains to the domains 'allowlist'
 
 - visually.io
 
@@ -167,7 +182,8 @@ We require to add the following domains to the domains 'allow list'
 - initialize the Visually SDK with the instrument interface and store state reflection<br/>
 - notify Visually when a PDP is loaded with its specific product and also when a specific variant is selected<br/>
 - implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK<br/>
-- handle user tracking concent by implementing analyticsProcessingAllowed
+- handle user tracking consent by implementing analyticsProcessingAllowed
+- change the headless url in the Visually Dashboard
 
 ---
 
