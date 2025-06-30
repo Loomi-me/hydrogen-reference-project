@@ -133,7 +133,7 @@ Click the "Save" button to apply the changes.
 
 ![img.png](readme_assets/img_domain.png)
 
-Once applied Visually the editor will load the store from this url
+Once applied the editor will load the store from this url
 ![img_1.png](readme_assets/img_domain_2.png)
 
 The left upper corner of the screen will show the current store domain.
