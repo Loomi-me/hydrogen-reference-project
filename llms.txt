@@ -1,0 +1,425 @@
+# Integrating Visually.io into a Shopify Hydrogen Storefront
+
+## Introduction
+
+Visually.io is a powerful tool that enhances headless commerce experiences for Shopify Hydrogen storefronts. This document provides detailed instructions on how to integrate Visually.io into your Hydrogen storefront to leverage its features for upsells, analytics, and improved customer experiences.
+
+## Core Integration Components
+
+The Visually integration revolves around two main aspects:
+
+### 1. The "Instrument" Interface
+
+This interface provides programmatic control over store operations required for Visually Upsells and Analytics:
+- Cart management (add/remove items)
+- Opening/closing cart drawer
+- Updating cart attributes
+
+**IMPORTANT**: Implementing the update cart-attributes method in the Visually instrument is crucial as it serves several essential purposes:
+- Detecting the SPA sales channel
+- Attributing orders to experiences for analytics purposes
+- Advanced Checkout targeting for upsells and recommendations
+- Preview of Checkout upsells
+- Tracking subscription contracts in orders
+
+### 2. Store State Reflection
+
+Visually needs to know the current state of the store, including:
+- Current cart state (items, quantities, prices)
+- Current product and variant information
+- Current page type (product page, collection page, etc.)
+
+## Step-by-Step Integration Guide
+
+### Step 1: Add Visually Scripts to the Document Head
+
+In your `app/root.jsx` file, add the Visually scripts to the document head and configure your alias and API key:
+
+```jsx
+<head>
+  <meta charSet="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.visuallySettings = {
+          alias: 'YOUR_ALIAS',
+          apiKey: 'YOUR_API_KEY'
+        };
+      `,
+    }}
+  />
+  <script
+    src="https://cdn.visually.io/spa/v1.js"
+    async
+  />
+  {/* Other head elements */}
+</head>
+```
+
+The Alias and API key can be found in the Visually dashboard (https://app.visually.io/dashboard) after you install the Visually app. Navigate to Account Settings > Manual Script Integration.
+
+**IMPORTANT**: Visually Scripts should be placed at the top of the `<head>` in the document to prevent flickering and delays. The JavaScript SDK needs to run as fast as possible on every page load.
+
+### Step 2: Allowlist Visually.io Domain Scripts in the CSP Header
+
+In your `app/entry.server.jsx` file, update the Content Security Policy to allow Visually.io scripts:
+
+```jsx
+const cspHeader = {
+  'default-src': ["'self'", 'cdn.shopify.com'],
+  'script-src': [
+    "'self'",
+    'cdn.shopify.com',
+    'cdn.visually.io',
+    "'unsafe-eval'", // Required for Visually to generate and execute dynamic JavaScript
+    "'unsafe-inline'",
+  ],
+  'connect-src': [
+    "'self'",
+    'cdn.shopify.com',
+    'monorail-edge.shopifysvc.com',
+    'api.visually.io',
+    'cdn.visually.io',
+  ],
+  // Other CSP directives
+};
+```
+
+Note that Visually needs to be allowed as `connectSrc` and also requires `unsafe-eval` in the `scriptSrc` as it uses `eval` to generate and execute dynamic JavaScript.
+
+### Step 3: Create the Visually Component
+
+Create a file at `app/components/Visually.jsx` that includes the core functionality of the Visually integration implementation:
+
+```jsx
+import {useEffect, useCallback} from 'react';
+
+// Transformer functions to convert your store's data format to Visually's expected format
+export function transformCart(cart) {
+  if (!cart) return undefined;
+  
+  return {
+    id: cart.id,
+    totalQuantity: cart.totalQuantity,
+    cost: {
+      subtotalAmount: {
+        amount: cart.cost?.subtotalAmount?.amount,
+        currencyCode: cart.cost?.subtotalAmount?.currencyCode,
+      },
+      totalAmount: {
+        amount: cart.cost?.totalAmount?.amount,
+        currencyCode: cart.cost?.totalAmount?.currencyCode,
+      },
+    },
+    lines: cart.lines?.map((line) => ({
+      id: line.id,
+      quantity: line.quantity,
+      merchandise: {
+        id: line.merchandise?.id,
+        product: {
+          id: line.merchandise?.product?.id,
+          title: line.merchandise?.product?.title,
+          handle: line.merchandise?.product?.handle,
+        },
+        title: line.merchandise?.title,
+        selectedOptions: line.merchandise?.selectedOptions,
+        image: {
+          url: line.merchandise?.image?.url,
+        },
+      },
+      cost: {
+        totalAmount: {
+          amount: line.cost?.totalAmount?.amount,
+          currencyCode: line.cost?.totalAmount?.currencyCode,
+        },
+      },
+    })),
+  };
+}
+
+export function transformProduct(product) {
+  if (!product) return undefined;
+  
+  return {
+    id: product.id,
+    title: product.title,
+    handle: product.handle,
+    description: product.description,
+    featuredImage: {
+      url: product.featuredImage?.url,
+    },
+    priceRange: {
+      minVariantPrice: {
+        amount: product.priceRange?.minVariantPrice?.amount,
+        currencyCode: product.priceRange?.minVariantPrice?.currencyCode,
+      },
+      maxVariantPrice: {
+        amount: product.priceRange?.maxVariantPrice?.amount,
+        currencyCode: product.priceRange?.maxVariantPrice?.currencyCode,
+      },
+    },
+    variants: product.variants?.nodes?.map((variant) => ({
+      id: variant.id,
+      title: variant.title,
+      availableForSale: variant.availableForSale,
+      price: {
+        amount: variant.price?.amount,
+        currencyCode: variant.price?.currencyCode,
+      },
+      selectedOptions: variant.selectedOptions,
+    })),
+  };
+}
+
+export function transformVariant(variant) {
+  if (!variant) return undefined;
+  
+  return {
+    id: variant.id,
+    title: variant.title,
+    availableForSale: variant.availableForSale,
+    price: {
+      amount: variant.price?.amount,
+      currencyCode: variant.price?.currencyCode,
+    },
+    selectedOptions: variant.selectedOptions,
+  };
+}
+
+// Hook to connect Visually with your store
+export function useVisuallyConnect({
+  cart,
+  currentProduct,
+  currentVariant,
+  addToCart,
+  removeFromCart,
+  updateCartAttributes,
+  openCart,
+  closeCart,
+}) {
+  // Initialize Visually instrument
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    // Create the instrument interface
+    window.visually.instrument = {
+      // Cart management methods
+      addToCart: async (variantId, quantity = 1, attributes = {}) => {
+        try {
+          await addToCart({
+            lines: [{merchandiseId: variantId, quantity}],
+            attributes: Object.entries(attributes).map(([key, value]) => ({key, value})),
+          });
+          return true;
+        } catch (error) {
+          console.error('Visually addToCart error:', error);
+          return false;
+        }
+      },
+      
+      removeFromCart: async (lineItemId) => {
+        try {
+          await removeFromCart([lineItemId]);
+          return true;
+        } catch (error) {
+          console.error('Visually removeFromCart error:', error);
+          return false;
+        }
+      },
+      
+      updateCartAttributes: async (attributes) => {
+        try {
+          await updateCartAttributes(
+            Object.entries(attributes).map(([key, value]) => ({key, value})),
+          );
+          return true;
+        } catch (error) {
+          console.error('Visually updateCartAttributes error:', error);
+          return false;
+        }
+      },
+      
+      openCart: () => {
+        openCart();
+        return true;
+      },
+      
+      closeCart: () => {
+        closeCart();
+        return true;
+      },
+    };
+    
+    // Set up privacy consent check
+    window.visually.analyticsProcessingAllowed = () => true; // Change this based on user consent
+    
+    // Initialize Visually
+    window.visually.init();
+  }, [addToCart, removeFromCart, updateCartAttributes, openCart, closeCart]);
+  
+  // Update cart state
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    const transformedCart = transformCart(cart);
+    if (transformedCart) {
+      window.visually.cart = transformedCart;
+    }
+  }, [cart]);
+  
+  // Update current product state
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    const transformedProduct = transformProduct(currentProduct);
+    if (transformedProduct) {
+      window.visually.currentProduct = transformedProduct;
+    }
+  }, [currentProduct]);
+  
+  // Update current variant state
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    const transformedVariant = transformVariant(currentVariant);
+    if (transformedVariant) {
+      window.visually.currentVariant = transformedVariant;
+    }
+  }, [currentVariant]);
+  
+  return null;
+}
+```
+
+### Step 4: Initialize Visually SDK in Your Page Layout
+
+In your `app/components/PageLayout.jsx` file, initialize the Visually SDK:
+
+```jsx
+import {useVisuallyConnect} from './Visually';
+import {useCart} from '@shopify/hydrogen-react';
+import {useAside} from './Aside'; // Your cart drawer component
+
+export function PageLayout({children, currentProduct, currentVariant}) {
+  const {
+    cart,
+    linesAdd: addToCart,
+    linesRemove: removeFromCart,
+    cartAttributesUpdate: updateCartAttributes,
+  } = useCart();
+  
+  const {openAside: openCart, closeAside: closeCart} = useAside();
+  
+  // Connect Visually with your store
+  useVisuallyConnect({
+    cart,
+    currentProduct,
+    currentVariant,
+    addToCart,
+    removeFromCart,
+    updateCartAttributes,
+    openCart,
+    closeCart,
+  });
+  
+  return (
+    <div className="page-layout">
+      {children}
+    </div>
+  );
+}
+```
+
+### Step 5: Notify Visually on Product Detail Pages (PDP)
+
+In your product detail page component (e.g., `app/routes/products.$handle.jsx`), notify Visually when a PDP is loaded and when a variant is selected:
+
+```jsx
+import {useEffect, useState} from 'react';
+import {useLoaderData} from '@remix-run/react';
+import {transformProduct, transformVariant} from '../components/Visually';
+
+export default function ProductPage() {
+  const {product} = useLoaderData();
+  const [selectedVariant, setSelectedVariant] = useState(product.selectedVariant);
+  
+  // Notify Visually when PDP is loaded
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    const transformedProduct = transformProduct(product);
+    if (transformedProduct) {
+      window.visually.currentProduct = transformedProduct;
+    }
+  }, [product]);
+  
+  // Notify Visually when variant is selected
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.visually) return;
+    
+    const transformedVariant = transformVariant(selectedVariant);
+    if (transformedVariant) {
+      window.visually.currentVariant = transformedVariant;
+    }
+  }, [selectedVariant]);
+  
+  // Handle variant selection
+  const handleVariantChange = (variant) => {
+    setSelectedVariant(variant);
+  };
+  
+  // Rest of your component
+}
+```
+
+## Privacy Considerations
+
+To respect customer tracking consent, implement the following method:
+
+```javascript
+window.visually.analyticsProcessingAllowed = () => {
+  // Return true if user has granted consent, false otherwise
+  return userHasGrantedConsent(); // Replace with your consent checking logic
+};
+```
+
+This ensures that analytics data is only processed when consent has been granted. Visually will query the consent status before sending any analytics data.
+
+## Allowed Domains
+
+If your SPA has a security mechanism that allows the website to run only on specific domains, add the following domains to your 'allowlist':
+
+- visually.io
+- loomi.me
+- vsly.local:8000
+
+## Configuring the Headless URL in Visually Dashboard
+
+To change the URL of the headless storefront in the Visually dashboard:
+
+1. Open the Account Settings page (https://visually.io/shop-settings)
+2. Scroll down to the "Store Domain" section
+3. Change it to the URL of your headless storefront
+4. Click the "Save" button to apply the changes
+
+Once applied, the editor will load the store from this URL, and the left upper corner of the screen will show the current store domain.
+
+## Integration Checklist
+
+- [ ] Add Visually scripts to the document head and configure the alias and API key
+- [ ] Allow Visually.io scripts domain in the CSP header
+- [ ] Create the Visually component with transformer functions
+- [ ] Initialize the Visually SDK with the instrument interface and store state reflection
+- [ ] Notify Visually when a PDP is loaded with its specific product
+- [ ] Notify Visually when a specific variant is selected
+- [ ] Implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK
+- [ ] Handle user tracking consent by implementing analyticsProcessingAllowed
+- [ ] Change the headless URL in the Visually Dashboard
+- [ ] Test the integration to ensure all features work correctly
+
+## Additional Resources
+
+For a comprehensive low-level framework-agnostic guide, refer to the SPA-INTEGRATION.md file in the repository.
+
+If you have any questions or need help with the integration, please don't hesitate to reach out to the Visually support team.
