@@ -1,11 +1,38 @@
 # Visually Hydrogen Reference Project 🦄
 
+
 <img alt="img.png" src="readme_assets/visually_hydro.png" width="700"/>
 
 This project serves as a reference implementation for integrating Visually with Shopify Hydrogen storefronts.
+
 It demonstrates how to set up the Visually integration to enhance your headless commerce experience.
+
 The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/storefronts/headless/hydrogen/getting-started):
 
+---
+
+
+## 🚀 Visually.io MCP Server Integration
+
+✨ **Access our MCP server:** [https://gitmcp.io/Loomi-me/hydrogen-reference-project](https://gitmcp.io/Loomi-me/hydrogen-reference-project)
+
+### 🔧 Adding to Your Development Environment
+
+You can easily add this to your development environment using Cursor. Here's an example configuration:
+
+```json
+{
+  "mcpServers": {
+    "hydrogen-visually": {
+      "url": "https://gitmcp.io/Loomi-me/hydrogen-reference-project"
+    }
+  }
+}
+```
+
+With this configuration, Cursor can interact with the tool and help with the integration, making your development process smoother and more efficient! 🎉
+
+---
 
 ## Table of Contents
 
