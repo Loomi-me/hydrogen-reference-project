@@ -206,7 +206,8 @@ We require to add the following domains to the domains 'allowlist'
 # Check List
 - add Visually scripts to the document head and configure the alias and api key<br/>
 - allow Visually.io scripts domain in the CSP header<br/>
-- initialize the Visually SDK with the instrument interface and store state reflection<br/>
+- [initialize the Visually ](https://github.com/Loomi-me/hydrogen-reference-project/blob/426b3f92f4fd9c6e9376cd6811ea0c45db1d5699/app/components/Visually.jsx#L31)SDK with the instrument interface and store state reflection<br/>
+  - call `window.visually.visuallyConnect` 
 - notify Visually when a PDP is loaded with its specific product and also when a specific variant is selected<br/>
 - implement the transform functions to return the cart and product objects in the shape expected by the Visually SDK<br/>
 - handle user tracking consent by implementing analyticsProcessingAllowed
