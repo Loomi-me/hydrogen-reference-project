@@ -118,6 +118,11 @@ For this reason it needs to be a descendant of `CartProvider` component. And the
 However this is not the only way to implement the instrument interface.<br/>
 Your project may be different, you may use different hooks and your own custom implementation.<br/>
 
+check out the following example: [initialize the Visually ](https://github.com/Loomi-me/hydrogen-reference-project/blob/426b3f92f4fd9c6e9376cd6811ea0c45db1d5699/app/components/Visually.jsx#L31)
+it calls `window.visually.visuallyConnect` initialization method with the instrument
+
+
+
 <img alt="img_5.png"  src="readme_assets/img_5.png" width="700"/>
 
 #### Tansforming the Cart / Cyrrent product
