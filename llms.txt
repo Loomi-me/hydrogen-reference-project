@@ -22,6 +22,8 @@ This interface provides programmatic control over store operations required for 
 - Preview of Checkout upsells
 - Tracking subscription contracts in orders
 
+Note: The concrete implementation of instrument methods (e.g., addToCart, removeFromCart, openCart, updateCartAttributes) is intentionally abstract in this example. Your app can (and likely will) implement these differently based on your cart and UI architecture. The critical requirement is that you provide an instrument and call window.visually.visuallyConnect({...}) with it.
+
 ### 2. Store State Reflection
 
 Visually needs to know the current state of the store, including:
@@ -198,18 +200,22 @@ export function useVisuallyConnect({
   openCart,
   closeCart,
 }) {
-  // Initialize Visually instrument
+  // Initialize Visually by calling visuallyConnect with your instrument
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visually) return;
-    
-    // Create the instrument interface
-    window.visually.instrument = {
-      // Cart management methods
-      addToCart: async (variantId, quantity = 1, attributes = {}) => {
+
+    // Set up privacy consent check (replace with your real consent logic)
+    window.visually.analyticsProcessingAllowed = () => true;
+
+    // IMPORTANT: Call visuallyConnect with the instrument you implement in your app
+    // The concrete implementation of these methods is project-specific.
+    // See app/components/Visually.jsx (useVisuallyConnect) for a working example.
+    window.visually.visuallyConnect({
+      // Cart management methods — your naming/shape may vary depending on your app
+      addToCart: async (variantId, quantity = 1) => {
         try {
           await addToCart({
             lines: [{merchandiseId: variantId, quantity}],
-            attributes: Object.entries(attributes).map(([key, value]) => ({key, value})),
           });
           return true;
         } catch (error) {
@@ -217,7 +223,8 @@ export function useVisuallyConnect({
           return false;
         }
       },
-      
+
+      // Optional: expose a clear/remove API depending on your needs
       removeFromCart: async (lineItemId) => {
         try {
           await removeFromCart([lineItemId]);
@@ -227,7 +234,8 @@ export function useVisuallyConnect({
           return false;
         }
       },
-      
+
+      // CRITICAL: keep this implemented — used for attribution, checkout targeting, etc.
       updateCartAttributes: async (attributes) => {
         try {
           await updateCartAttributes(
@@ -239,55 +247,52 @@ export function useVisuallyConnect({
           return false;
         }
       },
-      
+
       openCart: () => {
         openCart();
         return true;
       },
-      
+
       closeCart: () => {
         closeCart();
         return true;
       },
-    };
-    
-    // Set up privacy consent check
-    window.visually.analyticsProcessingAllowed = () => true; // Change this based on user consent
-    
-    // Initialize Visually
-    window.visually.init();
+
+      // You may also pass initial context like currency/locale/tags if available
+      // initialCurrency, initialLocale, customerTags, country, etc.
+    });
   }, [addToCart, removeFromCart, updateCartAttributes, openCart, closeCart]);
-  
-  // Update cart state
+
+  // Reflect cart state to Visually (example — adapt to your app)
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visually) return;
-    
+
     const transformedCart = transformCart(cart);
     if (transformedCart) {
-      window.visually.cart = transformedCart;
+      window.visually.onCartChanged?.(transformedCart);
     }
   }, [cart]);
-  
-  // Update current product state
+
+  // Reflect current product state
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visually) return;
-    
+
     const transformedProduct = transformProduct(currentProduct);
     if (transformedProduct) {
-      window.visually.currentProduct = transformedProduct;
+      window.visually.productChanged?.(transformedProduct);
     }
   }, [currentProduct]);
-  
-  // Update current variant state
+
+  // Reflect current variant state
   useEffect(() => {
     if (typeof window === 'undefined' || !window.visually) return;
-    
+
     const transformedVariant = transformVariant(currentVariant);
     if (transformedVariant) {
-      window.visually.currentVariant = transformedVariant;
+      window.visually.variantChanged?.(transformedVariant);
     }
   }, [currentVariant]);
-  
+
   return null;
 }
 ```

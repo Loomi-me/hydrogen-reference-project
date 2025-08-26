@@ -170,22 +170,20 @@ useEffect(() => {
     if (typeof window === 'undefined') return;
     const abortController = new AbortController();
     const handleVisuallyInit = () => {
-        setIsLoaded(!!window.visually?.visuallyConnect);
+        setIsLoaded(true);
     };
     window.addEventListener('x-visually-init', handleVisuallyInit, {
         once: true,
         signal: abortController.signal,
     });
-    return () => {
-        abortController.abort();
-    };
+    return abortController.abort;
 }, []);
 
 
 useEffect(() => {
-    if (typeof window === 'undefined' || !isLoaded) return;
-    window.visuallyConnect(instrumentationTool)
-// ensuring/awaiting that window.visuallyConnect is defined 
+    if (typeof window === 'undefined') return;
+    window?.visually?.visuallyConnect(instrumentationTool)
+// calling visuallyConnect more than once is ok, its idempotent.
 }, [isLoaded]);
 ```
 
