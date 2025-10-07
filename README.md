@@ -12,27 +12,6 @@ The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/
 ---
 
 
-## 🚀 Visually.io MCP Server Integration
-
-✨ **Access our MCP server:** [https://gitmcp.io/Loomi-me/hydrogen-reference-project](https://gitmcp.io/Loomi-me/hydrogen-reference-project)
-
-### 🔧 Adding to Your Development Environment
-
-You can easily add this to your development environment using Cursor. Here's an example configuration:
-
-```json
-{
-  "mcpServers": {
-    "hydrogen-visually": {
-      "url": "https://gitmcp.io/Loomi-me/hydrogen-reference-project"
-    }
-  }
-}
-```
-
-With this configuration, Cursor can interact with the tool and help with the integration, making your development process smoother and more efficient! 🎉
-
----
 
 ## Table of Contents
 
@@ -219,8 +198,103 @@ We require to add the following domains to the domains 'allowlist'
 - change the headless url in the Visually Dashboard
 
 ---
+## 🚀 Visually.io MCP Server Integration
+
+✨ **Access our MCP server:** [https://gitmcp.io/Loomi-me/hydrogen-reference-project](https://gitmcp.io/Loomi-me/hydrogen-reference-project)
+
+### 🔧 Adding to Your Development Environment
+
+You can easily add this to your development environment using Cursor. Here's an example configuration:
+
+```json
+{
+  "mcpServers": {
+    "hydrogen-visually": {
+      "url": "https://gitmcp.io/Loomi-me/hydrogen-reference-project"
+    }
+  }
+}
+```
+
+With this configuration, Cursor can interact with the tool and help with the integration, making your development process smoother and more efficient! 🎉
+
+---
 
 For a comprehensive low-level framework-agnostic guide 
 please refer to [SPA-INTEGRATION.md](SPA-INTEGRATION.md)
 
 If you have any more questions or need any help, please don't hesitate to reach out to us.
+
+---
+
+# HOW TO QA
+After you finished the integration, you can test it by checking the following:
+
+
+- CSP - open network tab and search for "visually"!
+
+![img.png](readme_assets/block.png)
+
+If you see something like this, not good. You CSP settings block our scripts. Please refer to the [CSP section](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
+- *allocate* call is made:
+  `https://live.visually-io.com/api/allocator/web/public/v2/allocate?q=eyJjYXJ0Q3...`
+The network tab should include the following call. Its the call that fetches the A/B tests and experiments.
+If you dont see it. It probably means that you did not call  `window.visually.visuallyConnect` with the correct tool.
+Specifically: `window.visually.addCartItem` run this in the console.
+After a page load our sdk awaits to be initialized. You provide the instrument which contains the method that allows adding items to the cart.
+This method is then assigned to to the `window.visually` object.
+Without this method defined we know that the sdk is not initialized.
+- check that `window.visually.addCartItem` works by calling it with a variant id from browser console.
+- check that the cart is updated after each change.
+  `window.loomi_ctx.cart` should contain the cart object. 
+This object is essential since its being used by the sdk to track the cart state.
+It should look like this: ( a summery of the essential parts of the cart object )
+```json
+{
+    "token": "hWN21BQ2khassPiM4Bc4pZaM?key=cdb90c0fd30011d01adbb50f57fb2943",
+    "attributes": {
+        "vslyCT": "vslyCT_hWN21BQ2khassPiM4Bc4pZaM?key=cdb90c0fd30011d01adbb50f57fb2943",
+        "vslySUBS": "0",
+        "vslyUID": "171grsock5",
+        "vslySID": "5140370364229706"
+    },
+    "original_total_price": 16995,
+    "total_price": 16995,
+    "total_discount": 0,
+    "total_weight": 0,
+    "item_count": 1,
+    "items": [
+        {
+            "id": 45201616502940,
+            "quantity": 1,
+            "variant_id": 45201616502940,
+            "price": 16995,
+        }
+    ],
+    "currency": "USD",
+    "items_subtotal_price": 16995
+}
+```
+- - The cart has attributes beginning with `vsly`
+Those are attributes that the Visually SDK adds to the cart for different reasons.
+The important part is that they exist, if you dont see them. It means that you did not initialize the sdk correctly. The instrument you provided did not provide the `cartAddAttributes` method that allows us to add the above attributes.
+- - After adding an item to the cart, the cart should be updated. ( you had to implement a hook that notifies our sdk with every cart change )
+- - note that the prices are in cents
+
+All the above should be valid on a fresh page load. On PDP, PLP, PDP, CART PAGE and any other page like a blog or page or a special landing page.
+
+
+If all the above is valid you can test running your first A/B test !
+
+Open visually.io editor and create a new test.
+- the test should have a single variant for simplicity. 
+- it should add an upsell somewhere on a page.
+- set an audience for the upsell of users with at least 1 line item in the cart.
+- Preview the experience
+- - since you dont have anything in the cart you shold not see the upsell
+- - add a line item to the cart
+- - the upsell should appear
+- -  use the `Add to cart` button in the upsell to add the item to the cart and see that it works as expected. 
+  - the item should be added to the cart and the store front should reflect the change.
+
+Congrats ! your first A/B test is running!
