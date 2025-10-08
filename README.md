@@ -231,24 +231,26 @@ If you have any more questions or need any help, please don't hesitate to reach 
 After you finished the integration, you can test it by checking the following:
 
 
-- CSP - open network tab and search for "visually"!
+- CSP: open the network tab and search for "visually"!
 
 ![img.png](readme_assets/block.png)
 
 If you see something like this, not good. You CSP settings block our scripts. Please refer to the [CSP section](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
 - *allocate* call is made:
   `https://live.visually-io.com/api/allocator/web/public/v2/allocate?q=eyJjYXJ0Q3...`
-The network tab should include the following call. Its the call that fetches the A/B tests and experiments.
-If you dont see it. It probably means that you did not call  `window.visually.visuallyConnect` with the correct tool.
+The network tab should include the following call. It's the call that fetches the A/B tests and experiments.
+-  console.log(`visually connected!`) <- this log line is printed when the sdk is initialized. If you don't see it, something went wrong.
+check out the implementation in `useIsVisuallyLoaded` hook in this repo.
+If you don't see it. It probably means that you did not call  `window.visually.visuallyConnect` with the correct tool.
 Specifically: `window.visually.addCartItem` run this in the console.
 After a page load our sdk awaits to be initialized. You provide the instrument which contains the method that allows adding items to the cart.
-This method is then assigned to to the `window.visually` object.
-Without this method defined we know that the sdk is not initialized.
+This method is then assigned to the `window.visually` object.
+Without this method defined, we know that the sdk is not initialized.
 - check that `window.visually.addCartItem` works by calling it with a variant id from browser console.
 - check that the cart is updated after each change.
   `window.loomi_ctx.cart` should contain the cart object. 
-This object is essential since its being used by the sdk to track the cart state.
-It should look like this: ( a summery of the essential parts of the cart object )
+This object is essential since it's being used by the sdk to track the cart state.
+It should display the essential fields in the cart object.
 ```json
 {
     "token": "hWN21BQ2khassPiM4Bc4pZaM?key=cdb90c0fd30011d01adbb50f57fb2943",
