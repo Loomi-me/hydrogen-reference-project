@@ -28,6 +28,7 @@ const useVisuallyConnect = () => {
     useEffect(() => {
         if (!isLoaded) return;
         window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
+        console.log(`visually connected!`)
         window.visually.visuallyConnect({
             cartClear: () => cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
             addToCart: (variantId, quantity) => cartWithActions.linesAdd([
