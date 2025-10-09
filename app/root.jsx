@@ -117,7 +117,7 @@ function loadDeferredData({context}) {
       return null;
     });
   return {
-    cart: caet.get(),
+    cart: cart.get(),
     isLoggedIn: customerAccount.isLoggedIn(),
     footer,
   };
