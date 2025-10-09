@@ -39,10 +39,10 @@ const useVisuallyConnect = () => {
             ]),
             cartAddAttributes: (attributes) => cartWithActions.cartAttributesUpdate(attributes),
             openCartDrawer: () => open('cart'),
-            initialCurrency: shop.currency,
+            initialCurrency: shop?.currency,
             customerTags: [], // strings array
             country: '', // initialize in case you have a country selection - ISO CODE
-            initialLocale: shop.acceptedLanguage.toLocaleLowerCase(),
+            initialLocale: shop.acceptedLanguage?.toLocaleLowerCase(),
         });
     }, [isLoaded]);
 
