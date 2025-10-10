@@ -26,9 +26,8 @@ const useVisuallyConnect = () => {
     const cartWithActions = useCart();
 
     useEffect(() => {
-        if (!isLoaded) return;
-        window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
         console.log(`visually connected!`)
+      // visuallyConnect is idempotent  - you can call it many times and it will only initialize once
         window.visually.visuallyConnect({
             cartClear: () => cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
             addToCart: (variantId, quantity) => cartWithActions.linesAdd([
@@ -44,6 +43,7 @@ const useVisuallyConnect = () => {
             country: '', // initialize in case you have a country selection - ISO CODE
             initialLocale: shop?.acceptedLanguage?.toLocaleLowerCase(),
         });
+      window.visually.analyticsProcessingAllowed = () => true; // Change this to false if user declined tracking consent
     }, [isLoaded]);
 
     const transformedCart = transformCart(cartWithActions);
