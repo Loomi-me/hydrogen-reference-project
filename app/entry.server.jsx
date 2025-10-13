@@ -27,12 +27,14 @@ export default async function handleRequest(
       "'self'",
       'https://cdn.shopify.com',
       'https://live.visually-io.com',
+      'https://assets.visually.io',
       "'unsafe-eval'",
     ],
     connectSrc: [
       "'self'",
       'https://cdn.shopify.com',
       'https://live.visually-io.com',
+      'https://assets.visually.io'
     ],
   });
   const body = await renderToReadableStream(
