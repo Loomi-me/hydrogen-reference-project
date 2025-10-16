@@ -26,7 +26,8 @@ const useVisuallyConnect = () => {
     const cartWithActions = useCart();
 
     useEffect(() => {
-        console.log(`visually connected!`)
+      if (!isLoaded) return;
+      console.log(`visually connected!`)
       // visuallyConnect is idempotent  - you can call it many times and it will only initialize once
         window.visually.visuallyConnect({
             cartClear: () => cartWithActions.linesRemove(cartWithActions.lines.map(({id}) => id)),
