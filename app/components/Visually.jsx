@@ -250,11 +250,11 @@ function hash(obj) {
 
 const useIsVisuallyLoaded = () => {
     const [isLoaded, setIsLoaded] = useState(false);
-    awaitCondition(() => !!window.visually?.visuallyConnect, 50, 100).then(() => setIsLoaded(!isLoaded))
+    awaitCondition(() => !!window.visually?.visuallyConnect, 50, 100).then(() => setIsLoaded(true))
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
-        const handleVisuallyInit = () => setIsLoaded(!isLoaded);
+        const handleVisuallyInit = () => setIsLoaded(true);
         window.addEventListener('x-visually-init', handleVisuallyInit);
         return () => window.removeEventListener('x-visually-init', handleVisuallyInit);
     }, []);
