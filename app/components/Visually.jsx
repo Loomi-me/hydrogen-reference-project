@@ -249,34 +249,17 @@ function hash(obj) {
 }
 
 const useIsVisuallyLoaded = () => {
-    const [isLoaded, setIsLoaded] = useState(false);
-    awaitCondition(() => !!window.visually?.visuallyConnect, 50, 100).then(() => setIsLoaded(true))
-
-    useEffect(() => {
-        if (typeof window === 'undefined') return;
-        const handleVisuallyInit = () => setIsLoaded(true);
-        window.addEventListener('x-visually-init', handleVisuallyInit);
-        return () => window.removeEventListener('x-visually-init', handleVisuallyInit);
-    }, []);
-    return isLoaded;
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleVisuallyInit = () => setIsLoaded(true);
+    if (!!window?.visually?.visuallyConnect){
+      setIsLoaded(true)
+    }
+    window.addEventListener('x-visually-init', handleVisuallyInit);
+    return () =>
+      window.removeEventListener('x-visually-init', handleVisuallyInit);
+  }, []);
+  return isLoaded;
 };
 
-export const awaitCondition = (
-    condition,
-    timeout ,
-    retries ,
-) => new Promise((resolve, reject) => {
-    if (condition()) {
-        resolve(0)
-        return
-    }
-    if (retries === 0) {
-        reject(0)
-        return
-    }
-    setTimeout(() => {
-        awaitCondition(condition, timeout, retries - 1)
-            .then(resolve)
-            .catch(reject)
-    }, timeout)
-});
