@@ -24,6 +24,11 @@ The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/
   - [Cart Attributes Merge and Race Condition](#cart-attributes-merge-and-race-condition)
   - [PDP and Variant Selection Tracking](#notify-visually-when-a-pdp-is-loaded-with-its-specific-product-and-also-when-a-variant-is-selected)
 
+ [Validation](#visually-integration-verification)
+  - [Critical cart state checks](#critical-cart-state-checks)
+  - [Critical add-to-cart check](#critical-add-to-cart-check)
+  - [Critical update-cart-attributes check](#critical-update-cart-attributes-check)
+
 ---
 
 
@@ -245,6 +250,84 @@ please refer to [SPA-INTEGRATION.md](SPA-INTEGRATION.md)
 If you have any more questions or need any help, please don't hesitate to reach out to us.
 
 ---
+
+## Visually Integration Verification
+
+This is the most important validation flow for a correct Visually integration.
+If these checks pass, the SDK is usually wired correctly.
+
+### Critical cart state checks
+
+Open browser console and inspect:
+
+```javascript
+window.loomi_ctx.cart
+```
+
+Expected shape (example):
+
+```json
+{
+  "item_count": 2,
+  "attributes": [
+    {"key": "vslySID", "value": "837241078542078"},
+    {"key": "vslyUID", "value": "pmhni7nxuh"},
+    {"key": "vslyCT", "value": "vslyCT_hWNAFapZ3cmNNOj4tAeHyR1f?key=25185acd71fb0fe50384c462eba140e5"}
+  ],
+  "items": [
+    {
+      "handle": "arcane-chronos-white-powder-bleach-kit",
+      "price": 4000,
+      "product_id": 7461766889543,
+      "quantity": 2,
+      "variant_id": 42548484702279
+    }
+  ],
+  "currency": "USD",
+  "total_price": 4000,
+  "original_total_price": 4000,
+  "token": "hWNAFapZ3cmNNOj4tAeHyR1f?key=25185acd71fb0fe50384c462eba140e5"
+}
+```
+
+Must-have checks:
+
+- `attributes` includes all 3 Visually keys: `vslySID`, `vslyUID`, `vslyCT`
+- prices are in cents (`price`, `total_price`, `original_total_price`)
+- `token` exists and is populated
+- `items` and `item_count` reflect the actual storefront cart
+
+### Critical add-to-cart check
+
+Run (example variant id):
+
+```javascript
+window.visually.addCartItem(42456955748423, 1)
+```
+
+After calling it, both must update:
+
+- `window.loomi_ctx.cart`
+- visible cart state in the storefront UI
+
+If either one does not update, treat integration as not fully working.
+
+### Critical update-cart-attributes check
+
+Run:
+
+```javascript
+window.visually.updateCartAttributes({
+  attributes: [{key: 'foo', value: 'bar'}],
+})
+```
+
+Expected result:
+
+- `foo=bar` is added into `window.loomi_ctx.cart.attributes`
+- existing Visually attributes (`vslySID`, `vslyUID`, `vslyCT`) remain present
+
+If existing attributes disappear after this call, the cart attribute update implementation is overriding instead of merging.
 
 # HOW TO QA
 After you finished the integration, you can test it by checking the following:
