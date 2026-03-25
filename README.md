@@ -21,6 +21,7 @@ The example is Based on [Hydrogen quickstart tutorial](https://shopify.dev/docs/
   - [Adding Visually Scripts and Configuring Alias/API Key](#adding-the-visuallyio-scripts-to-the-page-head-and-configuring-the-alias-and-api-key)
   - [Allowlisting Visually Scripts in Content Security Policy](#allowlisting-visually-io-domain-scripts-in-the-csp-header)
   - [Initializing the Visually SDK](#initializing-visually-sdk)
+  - [Cart Attributes Merge and Race Condition](#cart-attributes-merge-and-race-condition)
   - [PDP and Variant Selection Tracking](#notify-visually-when-a-pdp-is-loaded-with-its-specific-product-and-also-when-a-variant-is-selected)
 
 ---
@@ -123,6 +124,24 @@ function transformProduct(product: Object): CurrentProduct | undefined
 function transformVariant(product: Object): CurrentVariant | undefined
 ```
 
+
+### Cart Attributes Merge and Race Condition
+
+Pay special attention to `safeCartAttributesUpdate` in `app/components/Visually.jsx`.
+
+`cartWithActions.cartAttributesUpdate(attributes)` **replaces** the full cart attributes array.
+If you call it with only new keys, existing keys are removed.
+
+To avoid this, `safeCartAttributesUpdate`:
+
+- reads current attributes from `cartWithActions.attributes`
+- merges current + incoming attributes by key
+- updates the cart with the merged result
+
+It also queues updates (`WeakMap` + promise chain) per cart instance.
+This prevents a race condition where two scripts update attributes at nearly the same time and one update overrides the other.
+
+If this method is missing or implemented as a direct overwrite, Visually attributes (`vsly*`) may disappear intermittently and break attribution/tracking behavior.
 
 ### PDP
 

@@ -37,7 +37,8 @@ const useVisuallyConnect = () => {
                     quantity,
                 },
             ]),
-            cartAddAttributes: (attributes) => cartWithActions.cartAttributesUpdate(attributes),
+            cartAddAttributes: (attributes) =>
+                safeCartAttributesUpdate(cartWithActions, attributes),
             openCartDrawer: () => open('cart'),
             initialCurrency: shop?.currency,
             customerTags: [], // strings array
@@ -263,3 +264,39 @@ const useIsVisuallyLoaded = () => {
   return isLoaded;
 };
 
+// cartAttributesUpdate replaces the full attribute list, so passing only new attributes
+// would drop any existing keys that are not included in this call.
+// This helper merges new attributes with cartWithActions.attributes before updating.
+// Updates are queued to avoid a race where concurrent scripts overwrite each other's changes.
+const cartAttributesUpdateQueue = new WeakMap();
+
+function safeCartAttributesUpdate(cartWithActions, newAttributes = []) {
+  const previousUpdate =
+    cartAttributesUpdateQueue.get(cartWithActions) ?? Promise.resolve();
+
+  const nextUpdate = previousUpdate.then(() => {
+    const mergedByKey = new Map();
+
+    for (const attribute of cartWithActions.attributes || []) {
+      if (!attribute?.key) continue;
+      mergedByKey.set(attribute.key, attribute.value ?? '');
+    }
+
+    for (const attribute of newAttributes || []) {
+      if (!attribute?.key) continue;
+      mergedByKey.set(attribute.key, attribute.value ?? '');
+    }
+
+    const mergedAttributes = Array.from(mergedByKey, ([key, value]) => ({
+      key,
+      value,
+    }));
+
+    return cartWithActions.cartAttributesUpdate(mergedAttributes).then(
+      () => mergedAttributes,
+    );
+  });
+
+  cartAttributesUpdateQueue.set(cartWithActions, nextUpdate);
+  return nextUpdate;
+}
