@@ -145,6 +145,9 @@ function transformCart(cart) {
             item_count: maybe(() => cart.lines.reduce((p, c) => p + c.quantity, 0)),
             attributes: cart?.attributes || [],
             items: cart.lines.map((l) => ({
+              image: l.merchandise.product.featuredImage?.url,
+              featured_image: l.merchandise.product.featuredImage,
+              title: l.merchandise.product.title,
                 // selling_plan_allocation:{selling_plan:{name:undefined}}, // add a selling plan if available
                 handle: l.merchandise.product.handle,
                 price: maybe(() => parseFloat(l.cost.totalAmount.amount) * 100), // PRICE IN CENTS
